@@ -4,14 +4,14 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  // 清空現有數據（開發環境）
+  // 清空現有資料（開發環境）
   await prisma.evaluationWisdom.deleteMany();
   await prisma.evaluation.deleteMany();
   await prisma.student.deleteMany();
   await prisma.wisdom.deleteMany();
   await prisma.tone.deleteMany();
 
-  // 添加默認的四字箴言
+  // 新增預設的四字箴言
   const wisdoms = await Promise.all([
     prisma.wisdom.create({
       data: {
@@ -57,9 +57,9 @@ async function main() {
     }),
   ]);
 
-  console.log(`✓ 已創建 ${wisdoms.length} 個四字箴言`);
+  console.log(`✓ 已建立 ${wisdoms.length} 個四字箴言`);
 
-  // 添加默認的語氣
+  // 新增預設的語氣
   const tones = await Promise.all([
     prisma.tone.create({
       data: {
@@ -91,9 +91,9 @@ async function main() {
     }),
   ]);
 
-  console.log(`✓ 已創建 ${tones.length} 個語氣預設`);
+  console.log(`✓ 已建立 ${tones.length} 個語氣預設`);
 
-  // 添加示例學生數據（可選）
+  // 新增示例學生資料（可選）
   const students = await Promise.all([
     prisma.student.create({
       data: {
@@ -107,7 +107,7 @@ async function main() {
     }),
   ]);
 
-  console.log(`✓ 已創建 ${students.length} 個示例學生`);
+  console.log(`✓ 已建立 ${students.length} 個示例學生`);
 }
 
 main()
