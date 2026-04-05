@@ -1,5 +1,9 @@
 # 期末評語生成系統 - 開發指南
 
+**Last Updated:** 2026-04-06
+
+**專案狀態：** Phase 2 Complete ✅ | Phase 3 Ready (UI & Components)
+
 ## 📌 專案概述
 
 **快速評語生成系統** 是一個 Next.js 前後端Web應用，協助教師快速生成學生期末評語。
@@ -7,20 +11,20 @@
 **流程：**
 1. 老師輸入學生姓名、選擇四字箴言、選擇語氣
 2. 系統自動生成發送給 Gemini API 的 prompt
-3. 老師確認後，調用 Gemini API 生成最終評語
-4. 評語保存至數據庫，可查詢歷史記錄
+3. 老師確認後，呼叫 Gemini API 生成最終評語
+4. 評語儲存至資料庫，可查詢歷史記錄
 5. 後台管理：老師可動態管理四字箴言和語氣列表（CRUD）
 
 ---
 
-## 🏗️ 技術棧
+## 🏗️ 技術堆疊
 
 | 層次 | 技術 |
 |------|------|
 | **前端** | React 19 + Next.js 16 + shadcn/ui + Tailwind CSS |
 | **後端** | Next.js API Routes + Node.js |
-| **數據庫** | PostgreSQL (Supabase) + Prisma ORM |
-| **AI集成** | Google Gemini API |
+| **資料庫** | PostgreSQL (Supabase) + Prisma ORM |
+| **AI整合** | Google Gemini API |
 | **部署** | Vercel + GitHub Actions CI/CD |
 | **表單管理** | react-hook-form + Zod |
 
@@ -28,91 +32,49 @@
 
 ## ✅ 完成進度
 
-### 第一階段：項目初始化 ✓ 已完成
-- [x] Next.js 項目初始化（TypeScript + App Router + Tailwind CSS）
-- [x] 核心依賴安裝（@google/generative-ai、@prisma/client、react-hook-form、zod 等）
-- [x] Prisma 初始化與配置
-- [x] 環境變量設置（.env、.env.local）
-- [x] shadcn/ui 組件庫初始化及預安裝（Button、Input、Select、Card、Dialog、Table 等）
-- [x] 本地開發服務器驗證（http://localhost:3000 可訪問）
+### 第一階段：專案初始化 ✓ 已完成
+- [x] Next.js 專案初始化（TypeScript + App Router + Tailwind CSS）
+- [x] 核心套件安裝（@google/generative-ai、@prisma/client、react-hook-form、zod 等）
+- [x] Prisma 初始化與設定
+- [x] 環境變數設置（.env、.env.local）
+- [x] shadcn/ui 元件庫初始化及預安裝（Button、Input、Select、Card、Dialog、Table 等）
+- [x] 本地開發伺服器驗證（http://localhost:3000 可訪問）
 
-### 第二階段：數據層 & API 層 ✓ 已完成
+### 第二階段：資料層 & API 層 ✓ 已完成
 - [x] Prisma schema 定義（Wisdom、Tone、Student、Evaluation、EvaluationWisdom 五張表）
-- [x] Prisma seed 腳本編寫（初始化默認四字箴言和語氣）
-- [x] 環境配置文件優化（DATABASE_URL、DIRECT_URL 已配置）
-- [x] TypeScript 類型定義（lib/types.ts）
-- [x] 數據庫遷移執行（`npx prisma migrate dev --name init`）
-- [x] Gemini API 層實現（lib/gemini.ts、lib/prompts.ts）
-- [x] API 路由實現
+- [x] Prisma seed 腳本編寫（初始化預設四字箴言和語氣）
+- [x] 環境設定檔優化（DATABASE_URL、DIRECT_URL 已設定）
+- [x] TypeScript 型別定義（lib/types.ts）
+- [x] 資料庫遷移執行（`npx prisma migrate dev --name init`）
+- [x] Gemini API 層實作（lib/gemini.ts、lib/prompts.ts）
+- [x] API 路由實作
   - [x] /api/prompt/generate — 生成 prompt 預覽
-  - [x] /api/evaluation/generate — 調用 Gemini 生成評語
-  - [x] /api/evaluations/list — 獲取評語歷史
-  - [x] /api/evaluations/[id] — 獲取/刪除評語詳情
+  - [x] /api/evaluation/generate — 呼叫 Gemini 生成評語
+  - [x] /api/evaluations/list — 取得評語歷史
+  - [x] /api/evaluations/[id] — 取得/刪除評語詳情
   - [x] /api/admin/wisdoms — 箴言 CRUD（認證保護）
   - [x] /api/admin/tones — 語氣 CRUD（認證保護）
 - [x] 完整的輸入驗證（Zod schemas）
 - [x] RESTful API 設計 & 錯誤處理
-- [x] TypeScript 類型檢查通過
+- [x] TypeScript 型別檢查通過
 
-### 第三階段：前端 UI & 交互 ⏳ 待開始
-- [ ] 表單組件（StudentInfoForm、WisdomSelector、ToneSelector、EvaluationForm）
-- [ ] Prompt 預覽組件（PromptPreview）
+### 第三階段：前端 UI & 互動 ⏳ 待開始
+- [ ] 表單元件（StudentInfoForm、WisdomSelector、ToneSelector、EvaluationForm）
+- [ ] Prompt 預覽元件（PromptPreview）
 - [ ] 評語展示與歷史頁面（EvaluationResult、EvaluationHistory）
 - [ ] 後台管理頁面（Admin 頁面、WisdomManager、ToneManager）
-- [ ] 全局佈局與導航（Navbar、Layout）
+- [ ] 全域佈局與導覽（Navbar、Layout）
 
 ### 第四階段：測試 & 部署準備 ⏳ 待開始
 - [ ] 本地開發測試
-- [ ] 環境配置文件（.env.example、.gitignore）
+- [ ] 環境設定檔（.env.example、.gitignore）
 - [ ] GitHub 初始化 & 推送
 - [ ] GitHub Actions CI/CD 設置
 
 ### 第五階段：部署到 Vercel ⏳ 待開始
-- [ ] Vercel 項目配置
-- [ ] 數據庫部署（Supabase PostgreSQL）
-- [ ] 首次生產環境驗證
-
----
-
-## 🔧 本地開發指南
-
-### 環境要求
-- Node.js >= 18
-- npm
-- Supabase 帳戶（已配置）
-- Gemini API Key（已配置於 .env）
-
-### 啟動開發服務器
-```bash
-npm run dev
-# 或
-yarn dev
-```
-
-訪問 http://localhost:3000
-
-### 數據庫操作
-```bash
-# 生成 Prisma Client
-npx prisma generate
-
-# 執行資料庫遷移
-npx prisma migrate dev --name <migration_name>
-
-# 推送 schema 到資料庫（不創建遷移記錄）
-npx prisma db push
-
-# 填充初始數據
-npx prisma db seed
-
-# 查看資料庫（Prisma Studio）
-npx prisma studio
-```
-
-### 檢查
-```bash
-npm run lint
-```
+- [ ] Vercel 專案設定
+- [ ] 資料庫部署（Supabase PostgreSQL）
+- [ ] 首次正式環境驗證
 
 ---
 
@@ -123,15 +85,15 @@ academic-evaluation/
 ├── app/
 │   ├── layout.tsx                  # 布局
 │   ├── page.tsx                    # 首頁（評語生成表單）
-│   ├── globals.css                 # 全局樣式
+│   ├── globals.css                 # 全域樣式
 │   ├── api/
 │   │   ├── prompt/
 │   │   │   └── generate/route.ts   # 生成 prompt 預覽
 │   │   ├── evaluation/
-│   │   │   └── generate/route.ts   # 生成評語（調用 Gemini）
+│   │   │   └── generate/route.ts   # 生成評語（呼叫 Gemini）
 │   │   ├── evaluations/
-│   │   │   ├── list/route.ts       # 獲取評語列表
-│   │   │   └── [id]/route.ts       # 獲取評語詳情
+│   │   │   ├── list/route.ts       # 取得評語列表
+│   │   │   └── [id]/route.ts       # 取得評語詳情
 │   │   └── admin/
 │   │       ├── wisdoms/route.ts    # 箴言 CRUD
 │   │       └── tones/route.ts      # 語氣 CRUD
@@ -143,196 +105,460 @@ academic-evaluation/
 │       ├── tones/page.tsx          # 語氣管理
 │       └── layout.tsx              # 後台佈局
 ├── components/
-│   ├── ui/                         # shadcn/ui 組件
-│   ├── StudentInfoForm.tsx         # 學生信息輸入
+│   ├── ui/                         # shadcn/ui 元件
+│   ├── StudentInfoForm.tsx         # 學生資訊輸入
 │   ├── WisdomSelector.tsx          # 箴言選擇器
 │   ├── ToneSelector.tsx            # 語氣選擇器
 │   ├── EvaluationForm.tsx          # 整合表單
 │   ├── PromptPreview.tsx           # Prompt 預覽
 │   ├── EvaluationResult.tsx        # 評語展示
 │   ├── EvaluationHistory.tsx       # 歷史列表
-│   ├── WisdomManager.tsx           # 箴言管理組件
-│   └── ToneManager.tsx             # 語氣管理組件
+│   ├── WisdomManager.tsx           # 箴言管理元件
+│   └── ToneManager.tsx             # 語氣管理元件
 ├── lib/
-│   ├── types.ts                    # TypeScript 類型定義
+│   ├── types.ts                    # TypeScript 型別定義
 │   ├── gemini.ts                   # Gemini API 封裝
 │   ├── prompts.ts                  # Prompt 模板引擎
 │   ├── prisma.ts                   # Prisma Client 實例
-│   └── utils.ts                    # 工具函數
+│   └── utils.ts                    # 工具函式
 ├── prisma/
-│   ├── schema.prisma               # Prisma 數據模型
+│   ├── schema.prisma               # Prisma 資料模型
 │   ├── seed.ts                     # 初始化腳本
-│   └── migrations/                 # 數據庫遷移記錄
+│   └── migrations/                 # 資料庫遷移記錄
 ├── public/                         # 公開資源
 ├── .github/
 │   └── workflows/                  # GitHub Actions 流水線
-├── .env                            # 環境變量範本（Git 追蹤）
-├── .env.local                      # 本地環境變量（Git 忽略）
-├── .gitignore                      # Git 忽略配置
-├── package.json                    # 項目依賴
-├── tsconfig.json                   # TypeScript 配置
-├── tailwind.config.js              # Tailwind CSS 配置
-├── next.config.ts                  # Next.js 配置
-└── README.md                       # 項目說明文檔
+├── .env                            # 環境變數範本（Git 追蹤）
+├── .env.local                      # 本地環境變數（Git 忽略）
+├── .gitignore                      # Git 忽略設定
+├── package.json                    # 專案套件
+├── tsconfig.json                   # TypeScript 設定
+├── tailwind.config.js              # Tailwind CSS 設定
+├── next.config.ts                  # Next.js 設定
+└── README.md                       # 專案說明文件
 ```
 
 ---
 
-## 🔐 環境變量
+## 🔧 本地開發指南
 
-### 必需變量
+### 環境要求
+- Node.js >= 18
+- npm
+- Supabase 帳戶（已設定）
+- Gemini API Key（已設定於 .env）
+
+### 啟動開發伺服器
+```bash
+npm run dev              # 啟動開發伺服器 (http://localhost:3000)
+npx tsc --noEmit       # 型別檢查
+npm run lint           # 程式碼檢查
+npx prisma studio     # 查看資料庫
+```
+
+### 檢查
+```bash
+npm run lint
+```
+
+---
+
+## 📋 常用命令
+
+### 資料庫操作
+```bash
+npx prisma migrate dev --name "<description>"  # 建立遷移
+npx prisma db seed                             # 填充初始資料
+npx prisma migrate reset                       # 重置資料庫
+npx prisma studio                              # 打開 Prisma Studio
+```
+
+### API 測試
+```bash
+curl -X POST http://localhost:3000/api/prompt/generate \
+  -H "Content-Type: application/json" \
+  -d '{"studentName":"小明","wisdomIds":["id"],"toneId":"id"}'
+```
+
+### 後台管理 API（需要認證）
+```bash
+curl -X GET http://localhost:3000/api/admin/wisdoms \
+  -H "Authorization: Bearer $ADMIN_PASSWORD"
+```
+
+---
+
+## 🔍 故障排除快速表
+
+| 問題 | 症狀 | 解決方案 |
+|------|------|---------|
+| Seed 無輸出 | `npx prisma db seed` 沒有資訊 | ✅ 已修復 - package.json 設定 OK |
+| 型別檢查失敗 | TypeScript 編譯錯誤 | 執行 `npx tsc --noEmit` 檢查 |
+| 資料庫同步失敗 | Drift detected 警告 | 執行 `npx prisma migrate reset` |
+| 連線池超時 | 遷移或查詢掛起 | 檢查 DIRECT_URL 設置 |
+| API 認證失敗 | 401 Unauthorized | 檢查 `Authorization: Bearer` 頭 |
+
+**詳細排障指南：** 見各技術規範文件（react-typescript、prisma-orm、api-routes）或開發日記章節
+
+---
+
+## 🔐 環境變數清單
+
 ```env
-# Supabase PostgreSQL 連接
-DATABASE_URL=postgresql://...
-DIRECT_URL=postgresql://...
+# Supabase 連線
+DATABASE_URL=postgresql://...pooler.supabase.com:6543/...
+DIRECT_URL=postgresql://...pooler.supabase.com:5432/...
 
 # Gemini API
 GEMINI_API_KEY=AIzaSy...
 NEXT_PUBLIC_GEMINI_MODEL=gemini-2.0-flash
 
 # 後台管理
-ADMIN_PASSWORD=your_secure_password
+ADMIN_PASSWORD=your_password
 ```
 
-### 本地開發
-- 複製 `.env` 為 `.env.local`
-- 填入本地測試值或 Supabase 連接字符串
-
-### Vercel 部署
-- 在 Vercel Dashboard 添加上述環境變量
-- Prisma 遷移命令：`npx prisma migrate deploy`
+✅ 已設定於 `.env.local` (Git 忽略)
 
 ---
 
-## 📝 開發約定
+## 📁 核心文件地圖
 
-### 代碼風格
-- 使用 TypeScript（強類型）
-- 遵循 ESLint 配置
-- Tailwind CSS 優先於自定義 CSS
-- shadcn/ui 組件優先於自定義 UI
+```
+app/api/
+├── prompt/generate/          ✅ 生成 prompt 預覽
+├── evaluation/generate/      ✅ 呼叫 Gemini 生成評語
+├── evaluations/
+│   ├── list/                 ✅ 查詢歷史 (分頁)
+│   └── [id]/                 ✅ 取得/刪除詳情
+└── admin/
+    ├── wisdoms/              ✅ 箴言 CRUD
+    └── tones/                ✅ 語氣 CRUD
 
-### 命名規範
-- **組件：** PascalCase（e.g., `StudentInfoForm.tsx`）
-- **文件：** kebab-case（e.g., `student-info-form.tsx`）
-- **函數/變量：** camelCase
-- **常量：** UPPER_SNAKE_CASE
+lib/
+├── gemini.ts                 ✅ Gemini API 封裝
+├── prompts.ts                ✅ Prompt 模板引擎
+├── types.ts                  ✅ TypeScript 定義
+└── prisma.ts                 ✅ Prisma Client
 
-### API 路由規則
-- 使用 RESTful 風格
-- 請求驗證：Zod schema
-- 錯誤響應：統一格式
-  ```json
-  {
-    "success": false,
-    "error": "Error message",
-    "code": "ERROR_CODE"
-  }
-  ```
-
----
-
-## 🚀 下一步行動
-
-### 立即待做（第三階段）
-1. 📍 **現在：** 開發前端 UI 組件
-   ```bash
-   # 組件清單：
-   - components/StudentInfoForm.tsx
-   - components/WisdomSelector.tsx
-   - components/ToneSelector.tsx
-   - components/EvaluationForm.tsx
-   - components/PromptPreview.tsx
-   - components/EvaluationResult.tsx
-   - components/EvaluationHistory.tsx
-   - components/WisdomManager.tsx
-   - components/ToneManager.tsx
-   ```
-2. 集成 API 層到前端頁面
-3. 測試端到端流程
-
-### 後續（第四、五階段）
-- 進行本地和生產測試
-- 部署到 GitHub 和 Vercel
-- 設置 GitHub Actions CI/CD
-
----
-
-## 📚 參考資源
-
-| 資源 | 鏈接 |
-|------|------|
-| Next.js 文檔 | https://nextjs.org/docs |
-| Prisma 文檔 | https://www.prisma.io/docs |
-| shadcn/ui | https://ui.shadcn.com |
-| Gemini API | https://ai.google.dev |
-| Supabase | https://supabase.com |
-| Vercel | https://vercel.com |
-| Tailwind CSS | https://tailwindcss.com |
-
----
-
-## ❓ 常見問題
-
-### Q: 數據庫連接失敗？
-A: 檢查 `.env` 中的 `DATABASE_URL` 和 `DIRECT_URL` 是否正確。確認 Supabase 網絡連接正常。
-
-### Q: Prisma schema 修改後如何同步？
-A: 
-```bash
-npx prisma migrate dev  # 創建遷移
-# 或
-npx prisma db push     # 直接推送（開發環境）
+prisma/
+├── schema.prisma             ✅ 5 個模型 + 初始化
+└── seed.ts                   ✅ 6 箴言 + 4 語氣 + 2 學生
 ```
 
-### Q: 如何重置數據庫？
-A: 
-```bash
-npx prisma migrate reset  # 清空所有表並重新執行遷移
+---
+
+## 📚 已知的技術情報
+
+### Zod v4+ 兼容
+- ✅ 使用 `.issues` 替代 `.error.errors`
+- ✅ 所有驗證路由已修復
+
+### Prisma null/undefined 轉換
+- ✅ 可選欄位使用 `?? undefined` 轉換
+- ✅ 短路求值使用 `!!()` 強制轉型
+
+### Supabase 連線池
+- ✅ DATABASE_URL 用於應用連線（連線池）
+- ✅ DIRECT_URL 用於遷移（直接連線）
+
+**詳細文件：** 見 react-typescript.instructions.md、prisma-orm.instructions.md、api-routes.instructions.md 各文件或開發日記章節
+
+---
+
+## 🎯 下一步（Phase 3）
+
+### 立即待做
+1. 開發 9 個前端 UI 元件
+2. 建立 4 個主頁面（主表單、歷史、管理頁面）
+3. 整合 API 層
+4. 測試端到端流程
+
+### 元件清單
+```
+StudentInfoForm.tsx      # 學生資訊輸入
+WisdomSelector.tsx       # 箴言多選
+ToneSelector.tsx         # 語氣選擇
+EvaluationForm.tsx       # 整合表單
+PromptPreview.tsx        # Prompt 預覽
+EvaluationResult.tsx     # 評語展示
+EvaluationHistory.tsx    # 歷史列表
+WisdomManager.tsx        # 後台箴言管理
+ToneManager.tsx          # 後台語氣管理
 ```
 
-### Q: 本地開發時環境變量加載失敗？
-A: 確認 `.env.local` 存在且正確設置。重啟開發服務器。
+---
 
-### Q: TypeScript 報錯 "Type 'string | null' is not assignable to type 'string | undefined'"？
-A: 這是 Prisma schema 中可選字段（`String?`）返回 `null` 而非 `undefined` 引起的。使用 nullish coalescing operator 轉換：
+##  開發日記 & 排障記錄
+
+### 2026-04-06 | Seed 腳本無法執行問題
+
+**問題描述：**
+執行 `npx prisma db seed` 無輸出，資料庫中沒有初始化資料。
+
+**根本原因：**
+`package.json` 中缺少 `prisma.seed` 設定欄位，Prisma 無法定位 seed 文件。
+
+**解決方案：**
+在 `package.json` 中新增：
+```json
+"prisma": {
+  "seed": "ts-node --transpile-only prisma/seed.ts"
+}
+```
+
+**預防措施：**
+- 初始化 Prisma 專案時應立即設定 seed 路徑
+- 在 README 中明確說明 seed 執行步驟
+- 首次開發環境設置時測試 seed 是否正常執行
+
+**相關文件：**
+- [package.json](package.json)
+- [prisma/seed.ts](prisma/seed.ts)
+
+---
+
+### 2026-04-06 | Zod 驗證錯誤屬性問題
+
+**問題描述：**
+TypeScript 編譯失敗，錯誤訊息：`Property 'errors' does not exist on type 'ZodError'`
+
+**根本原因：**
+Zod v4+ 版本中，`ZodError` 的正確屬性是 `.issues` 而非 `.errors`（v3 中是 `.errors`）。
+
+**解決方案：**
+全部替換為 `.issues`：
 ```typescript
-// 錯誤 ❌
-toneDescription: tone.description
+// ❌ 錯誤（Zod v3 寫法）
+details: validation.error.errors
 
-// 正確 ✅
-toneDescription: tone.description ?? undefined
+// ✅ 正確（Zod v4+）
+details: validation.error.issues
 ```
 
-### Q: TypeScript 報錯 "Type 'string | boolean' is not assignable to type 'boolean'"？
-A: 短路求值 (`condition &&`) 返回的不是純布爾值。使用雙感嘆號強制轉換：
+**受影響文件：**
+- app/api/prompt/generate/route.ts
+- app/api/evaluation/generate/route.ts
+- app/api/evaluation/generate/list/route.ts
+- app/api/admin/wisdoms/route.ts
+- app/api/admin/tones/route.ts
+
+**預防措施：**
+- 安裝包時注意版本號
+- 升級套件前檢查 breaking changes
+- 執行 `npx tsc --noEmit` 驗證所有型別
+
+---
+
+### 2026-04-06 | TypeScript 型別轉換問題
+
+**問題 1：null vs undefined**
+
+描述：Prisma 可選欄位回傳 `null`，但函式期望 `undefined`
+
 ```typescript
-// 錯誤 ❌
+// ❌ 錯誤
+toneDescription: tone.description  // Type: string | null
+
+// ✅ 正確
+toneDescription: tone.description ?? undefined  // Type: string | undefined
+```
+
+**問題 2：短路求值型別**
+
+描述：`condition && value` 回傳 `string | boolean`，不是純 `boolean`
+
+```typescript
+// ❌ 錯誤
 return (
   prompt &&
   prompt.length > 50
 )
 
-// 正確 ✅
+// ✅ 正確
 return !!(
   prompt &&
   prompt.length > 50
 )
 ```
 
+**相關文件：**
+- [lib/prompts.ts](lib/prompts.ts)
+
+**預防措施：**
+- 在 IDE 中啟用 TypeScript Strict Mode
+- 使用 `as const` 確定型別推斷
+- 為複雜表達式新增顯式回傳型別註解
+
 ---
 
-**Last Updated:** 2026-04-06 (Phase 2 Complete ✅)  
-**Project Status:** Phase 3 Ready (UI & Components Development)  
+### 2026-04-06 | 資料庫 Schema 同步問題
+
+**問題描述：**
+`Drift detected: Your database schema is not in sync with your migration history`
+
+**原因分析：**
+- 直接在 Supabase 中修改 schema（繞過 Prisma）
+- 或在多個環境中執行了不同的遷移
+
+**解決方案：**
+```bash
+npx prisma migrate reset
+```
+
+此命令會：
+1. 刪除所有表和資料（開發環境）
+2. 重新執行所有遷移
+3. 自動執行 seed 腳本
+
+**預防措施：**
+- 始終通過 Prisma 修改 schema（`npx prisma migrate dev`）
+- 避免直接在資料庫管理介面修改
+- 在團隊環境中約定 schema 修改流程
+- 定期檢查遷移文件發生衝突
+
+**相關文件：**
+- [prisma/schema.prisma](prisma/schema.prisma)
+- [prisma/migrations/](prisma/migrations/)
+
+---
+
+### 2026-04-06 | API 密碼認證設計
+
+**決策：**
+後台管理 API 使用簡單的 Bearer token 認證（ADMIN_PASSWORD）
+
+**理由：**
+- 初期專案，無複雜用戶系統
+- 開發效率優先
+- 便於本地測試
+
+**實作方式：**
+```typescript
+function validateAdminAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get("authorization");
+  const password = process.env.ADMIN_PASSWORD;
+  return !!authHeader && !!password && authHeader === `Bearer ${password}`;
+}
+```
+
+**使用示例：**
+```bash
+curl -H "Authorization: Bearer your_password" \
+  http://localhost:3000/api/admin/wisdoms
+```
+
+**後期升級計畫：**
+- [ ] Phase 4：新增 Session-based 認證
+- [ ] Phase 5：整合 OAuth 或 JWT 認證
+
+**相關文件：**
+- [app/api/admin/wisdoms/route.ts](app/api/admin/wisdoms/route.ts)
+- [app/api/admin/tones/route.ts](app/api/admin/tones/route.ts)
+
+---
+
+### 2026-04-06 | Supabase 連線池設定
+
+**關鍵設置：**
+
+```env
+# 應用連線（使用連線池，推薦）
+DATABASE_URL="postgresql://user:pass@aws-...pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# 遷移連線（直接連線，避免連線池問題）
+DIRECT_URL="postgresql://user:pass@aws-...pooler.supabase.com:5432/postgres"
+```
+
+**Prisma schema 設定：**
+```prisma
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")  # 關鍵！
+}
+```
+
+**為什麼需要兩個 URL：**
+- `DATABASE_URL`：應用執行時使用，連線池減少連線數
+- `DIRECT_URL`：Prisma 遷移時使用，避免連線池限制導致鎖死
+
+**預防措施：**
+- Vercel 部署時檢查環境變數設置
+- 遷移失敗時優先檢查 `DIRECT_URL` 是否正確
+- 避免在連線池中執行長時間查詢
+
+**相關文件：**
+- [.env](.env)
+- [prisma/schema.prisma](prisma/schema.prisma)
+
+---
+
+## 📚 常用命令速查表
+
+```bash
+# 開發迭代
+npm run dev                           # 啟動開發伺服器
+npx tsc --noEmit                      # 型別檢查
+npm run lint                          # 程式碼檢查
+
+# 資料庫操作
+npx prisma migrate dev --name <name>  # 建立新遷移
+npx prisma migrate reset              # 重置資料庫
+npx prisma db seed                    # 執行 seed
+npx prisma studio                     # 打開資料庫管理介面
+npx prisma generate                   # 重新生成 Prisma Client
+
+# Git 操作
+git add .
+git commit -m "feat: description"
+git push origin main
+
+# 測試 API
+curl -X POST http://localhost:3000/api/prompt/generate \
+-H "Content-Type: application/json" \
+-d '{"studentName":"小明","wisdomIds":["id"],"toneId":"id"}'
+```
+
+---
+
+## 🔍 故障排除快速指南
+
+| 問題 | 症狀 | 解決步驟 |
+|------|------|---------|
+| **Seed 無輸出** | `npx prisma db seed` 沒有任何資訊 | 檢查 package.json 中 `prisma.seed` 設定 |
+| **型別檢查失敗** | TypeScript 編譯錯誤 | 執行 `npx tsc --noEmit` 檢查詳細錯誤 |
+| **資料庫同步問題** | Drift detected 警告 | 執行 `npx prisma migrate reset` |
+| **連線池超時** | 遷移或查詢掛起 | 檢查 DIRECT_URL 是否正確設置 |
+| **API 認證失敗** | 401 Unauthorized | 檢查 Authorization 頭格式與密碼 |
+
+---
+
+## 📈 經驗教訓總結
+
+✅ **做得好的事：**
+- 及早引入 TypeScript + ESLint
+- 在開發早期建立完整的 API 層
+- 使用 Zod 進行輸入驗證
+- 詳細的環境變數設定
+
+⚠️ **可改進的地方：**
+- 應更早發現 package.json 缺少 seed 設定
+- 型別檢查應在每次提交前執行
+- 可新增 pre-commit hooks 自動檢查
+
+🎯 **未來行動：**
+- 新增 husky + lint-staged 自動化檢查
+- 編寫單元測試（Jest）
+- 設置 GitHub Actions 自動化流水線  
 
 ## 📋 已解決的問題歷史
 
-### TypeScript 類型問題
+### TypeScript 型別問題
 
 | 日期 | 文件 | 問題 | 解決方案 |
 |------|------|------|----------|
-| 2026-04-06 | lib/prompts.ts | null vs undefined 類型不匹配 | 使用 `??` nullish coalescing 轉換 |
-| 2026-04-06 | lib/prompts.ts | 短路求值返回 boolean \| string | 使用 `!!` 強制轉換為 boolean |
+| 2026-04-06 | lib/prompts.ts | null vs undefined 型別不匹配 | 使用 `??` nullish coalescing 轉換 |
+| 2026-04-06 | lib/prompts.ts | 短路求值回傳 boolean \| string | 使用 `!!` 強制轉換為 boolean |
 
 ### Zod 驗證錯誤處理
 
@@ -342,7 +568,7 @@ return !!(
 
 ### 常見 TypeScript 錯誤與解決方案
 
-#### Q: TypeScript 報錯 "Property 'errors' does not exist on type 'ZodError'"？
+#### Q: TypeScript 發生錯誤 "Property 'errors' does not exist on type 'ZodError'"？
 A: Zod v4+ 版本中，正確的屬性是 `.issues` 而不是 `.errors`。修正所有驗證錯誤處理：
 ```typescript
 // 錯誤 ❌
@@ -352,8 +578,8 @@ details: validation.error.errors
 details: validation.error.issues
 ```
 
-#### Q: TypeScript 報錯 "Type 'string | null' is not assignable to type 'string | undefined'"？
-A: 這是 Prisma schema 中可選字段（`String?`）返回 `null` 而非 `undefined` 引起的。使用 nullish coalescing operator 轉換：
+#### Q: TypeScript 發生錯誤 "Type 'string | null' is not assignable to type 'string | undefined'"？
+A: 這是 Prisma schema 中可選欄位（`String?`）回傳 `null` 而非 `undefined` 引起的。使用 nullish coalescing operator 轉換：
 ```typescript
 // 錯誤 ❌
 toneDescription: tone.description
@@ -362,8 +588,8 @@ toneDescription: tone.description
 toneDescription: tone.description ?? undefined
 ```
 
-#### Q: TypeScript 報錯 "Type 'string | boolean' is not assignable to type 'boolean'"？
-A: 短路求值 (`condition &&`) 返回的不是純布爾值。使用雙感嘆號強制轉換：
+#### Q: TypeScript 發生錯誤 "Type 'string | boolean' is not assignable to type 'boolean'"？
+A: 短路求值 (`condition &&`) 回傳的不是純布林值。使用雙感嘆號強制轉換：
 ```typescript
 // 錯誤 ❌
 return (
