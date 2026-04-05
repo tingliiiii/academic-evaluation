@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-04-06
 
-**專案狀態：** Phase 2 Complete ✅ | Phase 3 Ready (UI & Components)
+**專案狀態：** Phase 2 Complete ✅ | Phase 3 進行中 (UI & Components)
 
 ## 📌 專案概述
 
@@ -32,6 +32,15 @@
 
 ## ✅ 完成進度
 
+| Phase | 名稱 | 狀態 | 完成度 |
+|-------|------|------|--------|
+| 1 | 專案初始化 | ✅ 完成 | 100% |
+| 2 | 資料層 & API 層 | ✅ 完成 | 100% |
+| 3 | 前端 UI & 互動 | 🔄 進行中 | 20% |
+| 4 | 測試 & 部署準備 | ⏳ 待開始 | 0% |
+| 5 | 部署到 Vercel | ⏳ 待開始 | 0% |
+
+
 ### 第一階段：專案初始化 ✓ 已完成
 - [x] Next.js 專案初始化（TypeScript + App Router + Tailwind CSS）
 - [x] 核心套件安裝（@google/generative-ai、@prisma/client、react-hook-form、zod 等）
@@ -47,7 +56,7 @@
 - [x] TypeScript 型別定義（lib/types.ts）
 - [x] 資料庫遷移執行（`npx prisma migrate dev --name init`）
 - [x] Gemini API 層實作（lib/gemini.ts、lib/prompts.ts）
-- [x] API 路由實作
+- [x] API 路由實作並通過測試
   - [x] /api/prompt/generate — 生成 prompt 預覽
   - [x] /api/evaluation/generate — 呼叫 Gemini 生成評語
   - [x] /api/evaluations/list — 取得評語歷史
@@ -58,7 +67,13 @@
 - [x] RESTful API 設計 & 錯誤處理
 - [x] TypeScript 型別檢查通過
 
-### 第三階段：前端 UI & 互動 ⏳ 待開始
+#### 測試結果
+- ✅ 所有 API 端點正常運作
+- ✅ Gemini API 已調整為 gemini-2.5-flash 模型
+- ✅ 完整流程驗證：生成 Prompt → 呼叫 Gemini → 儲存評語
+- ✅ 資料庫與 Prisma 正常工作
+
+### 第三階段：前端 UI & 互動 🔄 進行中
 - [ ] 表單元件（StudentInfoForm、WisdomSelector、ToneSelector、EvaluationForm）
 - [ ] Prompt 預覽元件（PromptPreview）
 - [ ] 評語展示與歷史頁面（EvaluationResult、EvaluationHistory）
