@@ -1,24 +1,30 @@
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
-
-// 驗證請求 schema
-const loginSchema = z.object({
-  password: z.string().min(1, "Password is required"),
-});
+import { loginSchema, validateBody, getValidationErrorsMessage } from '@/lib/schemas';
+import {
+  createSuccessResponse,
+  createErrorResponse,
+} from '@/lib/errors';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    
-    // 驗證請求數據
-    const validation = loginSchema.safeParse(body);
+    // 1. 解析請求體
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        createErrorResponse('無效的 JSON 格式'),
+        { status: 400 }
+      );
+    }
+
+    // 2. 驗證請求數據
+    const validation = validateBody(body, loginSchema);
     if (!validation.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Password is required",
-          details: validation.error.issues,
-        },
+        createErrorResponse(
+          getValidationErrorsMessage(validation.error)
+        ),
         { status: 400 }
       );
     }
@@ -26,22 +32,23 @@ export async function POST(request: Request) {
     const { password } = validation.data;
     const correctPassword = process.env.ADMIN_PASSWORD || '0000';
 
-    console.log("Received login attempt with password:", password);
-    console.log("Correct password:", correctPassword);
-    
+    // 3. 驗證密碼
     if (password === correctPassword) {
-      return NextResponse.json({ success: true });
-    } else {
-      // 密碼錯誤返回 401（認證失敗）
-      return NextResponse.json(
-        { success: false, error: "Invalid password" },
-        { status: 401 }
-      );
+      return NextResponse.json(createSuccessResponse({}));
     }
-  } catch (error) {
-    console.error("Login failed:", error);
+
+    // 4. 密碼驗證失敗
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      createErrorResponse('密碼錯誤'),
+      { status: 401 }
+    );
+  } catch (error) {
+    console.error('[Login] Unexpected error:', error);
+
+    return NextResponse.json(
+      createErrorResponse(
+        error instanceof Error ? error.message : '伺服器內部錯誤'
+      ),
       { status: 500 }
     );
   }

@@ -2,44 +2,84 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateEvaluation } from "@/lib/gemini";
 import prisma from "@/lib/prisma";
-import { z } from "zod";
 import type { Prisma } from '@prisma/client';
+import {
+  evaluationRequestSchema,
+  evaluationListQuerySchema,
+  validateBody,
+  validateQuery,
+  getValidationErrorsMessage,
+} from "@/lib/schemas";
+import {
+  createErrorResponse,
+} from "@/lib/errors";
 
 // ============================================================================
-// POST: 新增評語 (原 app/api/evaluation/generate/route.ts)
+// POST: 新增評語 
 // ============================================================================
-
-const postRequestSchema = z.object({
-  prompt: z.string().min(50, "Prompt is too short"),
-  studentName: z.string().min(1, "Student name is required"),
-  wisdomIds: z.array(z.string()),
-  toneId: z.string().min(1, "Tone is required"),
-});
 
 async function handlePost(request: NextRequest) {
   try {
-    const body = await request.json();
+    // 1. 解析和驗證請求體
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        createErrorResponse('無效的 JSON 格式'),
+        { status: 400 }
+      );
+    }
 
-    // 驗證請求
-    const validation = postRequestSchema.safeParse(body);
+    const validation = validateBody(body, evaluationRequestSchema);
     if (!validation.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid request",
-          details: validation.error.issues,
-        },
+        createErrorResponse(
+          getValidationErrorsMessage(validation.error)
+        ),
         { status: 400 }
       );
     }
 
     const { prompt, studentName, wisdomIds, toneId } = validation.data;
 
-    // 1. 呼叫 Gemini API
-    const content = await generateEvaluation(prompt);
+    // 2. 驗證 tone 存在
+    const tone = await prisma.tone.findUnique({ where: { id: toneId } });
+    if (!tone) {
+      return NextResponse.json(
+        createErrorResponse('指定的語氣不存在'),
+        { status: 400 }
+      );
+    }
 
-    // 2. 儲存到資料庫
-    // 2.1 找或建立學生
+    // 3. 驗證 wisdoms 存在
+    const wisdoms = await prisma.wisdom.findMany({
+      where: { id: { in: wisdomIds } },
+    });
+    if (wisdoms.length !== wisdomIds.length) {
+      return NextResponse.json(
+        createErrorResponse('部分箴言不存在'),
+        { status: 400 }
+      );
+    }
+
+    // 4. 調用 Gemini API
+    let content: string;
+    try {
+      content = await generateEvaluation(prompt);
+    } catch (error) {
+      console.error('[Evaluations POST] Gemini API error:', error);
+      return NextResponse.json(
+        createErrorResponse(
+          error instanceof Error
+            ? error.message
+            : '生成評語失敗，請稍後重試'
+        ),
+        { status: 500 }
+      );
+    }
+
+    // 5. 儲存到資料庫
     let student = await prisma.student.findFirst({
       where: { name: studentName },
     });
@@ -50,7 +90,6 @@ async function handlePost(request: NextRequest) {
       });
     }
 
-    // 2.2 建立評語記錄
     const evaluation = await prisma.evaluation.create({
       data: {
         studentId: student.id,
@@ -89,30 +128,21 @@ async function handlePost(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error generating evaluation:", error);
-
-    const message =
-      error instanceof Error ? error.message : "Failed to generate evaluation";
+    console.error("[Evaluations POST] Unexpected error:", error);
 
     return NextResponse.json(
-      {
-        success: false,
-        error: message,
-      },
+      createErrorResponse(
+        error instanceof Error ? error.message : '伺服器內部錯誤',
+        500
+      ),
       { status: 500 }
     );
   }
 }
 
 // ============================================================================
-// GET: 取得評語列表 (原 app/api/evaluation/generate/list/route.ts)
+// GET: 取得評語列表
 // ============================================================================
-
-const getQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(10),
-  studentName: z.string().optional(),
-});
 
 async function handleGet(request: NextRequest) {
   try {
@@ -120,14 +150,12 @@ async function handleGet(request: NextRequest) {
     const queryData = Object.fromEntries(searchParams);
 
     // 驗證查詢參數
-    const validation = getQuerySchema.safeParse(queryData);
+    const validation = validateQuery(queryData, evaluationListQuerySchema);
     if (!validation.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid query parameters",
-          details: validation.error.issues,
-        },
+        createErrorResponse(
+          getValidationErrorsMessage(validation.error)
+        ),
         { status: 400 }
       );
     }
@@ -146,27 +174,27 @@ async function handleGet(request: NextRequest) {
       };
     }
 
-    // 取得總數
-    const total = await prisma.evaluation.count({ where });
-
-    // 取得分頁的評語列表
-    const evaluations = await prisma.evaluation.findMany({
-      where,
-      include: {
-        student: true,
-        tone: true,
-        wisdoms: {
-          include: {
-            wisdom: true,
+    // 取得總數和數據
+    const [total, evaluations] = await Promise.all([
+      prisma.evaluation.count({ where }),
+      prisma.evaluation.findMany({
+        where,
+        include: {
+          student: true,
+          tone: true,
+          wisdoms: {
+            include: {
+              wisdom: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip,
-      take: pageSize,
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: pageSize,
+      }),
+    ]);
 
     return NextResponse.json(
       {
@@ -186,30 +214,29 @@ async function handleGet(request: NextRequest) {
             totalPages: Math.ceil(total / pageSize),
           },
         },
-      },
-      { status: 200 }
+      }
     );
   } catch (error) {
-    console.error("Error fetching evaluations:", error);
+    console.error("[Evaluations GET] Unexpected error:", error);
 
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch evaluations",
-      },
+      createErrorResponse(
+        error instanceof Error ? error.message : '伺服器內部錯誤',
+        500
+      ),
       { status: 500 }
     );
   }
 }
 
 // ============================================================================
-// 路由處理
+// 路由 Handler
 // ============================================================================
-
-export async function GET(request: NextRequest) {
-  return handleGet(request);
-}
 
 export async function POST(request: NextRequest) {
   return handlePost(request);
+}
+
+export async function GET(request: NextRequest) {
+  return handleGet(request);
 }
