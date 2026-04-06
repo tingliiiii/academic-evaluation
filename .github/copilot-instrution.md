@@ -45,7 +45,7 @@
 - [x] Next.js 專案初始化（TypeScript + App Router + Tailwind CSS）
 - [x] 核心套件安裝（@google/generative-ai、@prisma/client、react-hook-form、zod 等）
 - [x] Prisma 初始化與設定
-- [x] 環境變數設置（.env、.env.local）
+- [x] 環境變數設置（.env）
 - [x] shadcn/ui 元件庫初始化及預安裝（Button、Input、Select、Card、Dialog、Table 等）
 - [x] 本地開發伺服器驗證（http://localhost:3000 可訪問）
 

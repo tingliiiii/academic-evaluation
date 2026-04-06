@@ -17,22 +17,18 @@ export interface AuthContextValue {
 }
 
 export function useAuth(): AuthContextValue {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const state = getAuthState();
-    setIsLoggedIn(state.isLoggedIn);
-    setMounted(true);
-  }, []);
+  const [state, setState] = useState(() => {
+    const auth = getAuthState();
+    return { isLoggedIn: auth.isLoggedIn, mounted: true };
+  });
 
   const logout = useCallback(() => {
     authLogout();
-    setIsLoggedIn(false);
+    setState({ isLoggedIn: false, mounted: true });
   }, []);
 
   return {
-    isLoggedIn: mounted ? isLoggedIn : false,
+    isLoggedIn: state.isLoggedIn,
     logout,
   };
 }

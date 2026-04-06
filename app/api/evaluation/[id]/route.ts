@@ -4,10 +4,10 @@ import prisma from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const evaluation = await prisma.evaluation.findUnique({
       where: { id },
@@ -62,10 +62,10 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // 驗證後台密碼
     const authHeader = request.headers.get("authorization");
@@ -81,7 +81,7 @@ export async function DELETE(
       );
     }
 
-    const evaluation = await prisma.evaluation.delete({
+    await prisma.evaluation.delete({
       where: { id },
     });
 

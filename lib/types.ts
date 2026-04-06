@@ -47,9 +47,9 @@ export interface ToneCreateRequest {
 }
 
 // 資料庫模型型別（從 Prisma 自動生成）
-export type Wisdom = Prisma.WisdomGetPayload<{}>;
-export type Tone = Prisma.ToneGetPayload<{}>;
-export type Student = Prisma.StudentGetPayload<{}>;
+export type Wisdom = Prisma.WisdomGetPayload<Record<string, never>>;
+export type Tone = Prisma.ToneGetPayload<Record<string, never>>;
+export type Student = Prisma.StudentGetPayload<Record<string, never>>;
 export type Evaluation = Prisma.EvaluationGetPayload<{
   include: {
     student: true;

@@ -10,15 +10,12 @@ export default function LoginPage() {
   const { login, loading, error: authError } = useAuthLogin();
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isChecking, setIsChecking] = useState(true);
 
   // 檢查是否已登入，如果已登入則重定向
   useEffect(() => {
     const state = getAuthState();
     if (state.isLoggedIn) {
       router.push('/dashboard');
-    } else {
-      setIsChecking(false);
     }
   }, [router]);
 
@@ -44,8 +41,9 @@ export default function LoginPage() {
     [password, login, authError, router]
   );
 
-  // 避免 hydration 錯誤，等待檢查完成
-  if (isChecking) {
+  // 如果已登入，不顯示表單（讓 router.push 在 effect 中執行）
+  const state = getAuthState();
+  if (state.isLoggedIn) {
     return null;
   }
 

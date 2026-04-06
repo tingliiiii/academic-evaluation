@@ -1,5 +1,6 @@
 // app/api/evaluations/list/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import type { Prisma } from '@prisma/client';
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * pageSize;
 
     // 構建查詢條件
-    const where: any = {};
+    const where: Prisma.EvaluationWhereInput = {};
     if (studentName) {
       where.student = {
         name: {
