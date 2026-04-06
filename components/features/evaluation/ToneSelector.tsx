@@ -19,9 +19,11 @@ export function ToneSelector() {
   if (loading) {
     return (
       <div className="space-y-2">
-        <Label htmlFor="tone">選擇語氣</Label>
-        <Card className="p-4">
-          <p className="text-sm text-gray-500">載入中...</p>
+        <Label htmlFor="tone" className="text-amber-900 font-bold">
+          🎭 選擇語氣
+        </Label>
+        <Card className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200">
+          <p className="text-sm text-amber-700 font-medium">⏳ 載入中...</p>
         </Card>
       </div>
     );
@@ -30,9 +32,11 @@ export function ToneSelector() {
   if (error) {
     return (
       <div className="space-y-2">
-        <Label htmlFor="tone">選擇語氣</Label>
-        <Card className="p-4 border-red-200 bg-red-50">
-          <p className="text-sm text-red-600">{error}</p>
+        <Label htmlFor="tone" className="text-amber-900 font-bold">
+          🎭 選擇語氣
+        </Label>
+        <Card className="p-4 border-2 border-red-300 bg-red-50">
+          <p className="text-sm text-red-700 font-medium">❌ {error}</p>
         </Card>
       </div>
     );
@@ -45,11 +49,13 @@ export function ToneSelector() {
       rules={{ required: '請選擇一個語氣' }}
       render={({ field, fieldState: { error } }) => (
         <div className="space-y-2">
-          <Label htmlFor="tone">選擇語氣</Label>
+          <Label htmlFor="tone" className="text-amber-900 font-bold">
+            🎭 選擇語氣
+          </Label>
           <Select value={field.value || ''} onValueChange={field.onChange}>
             <SelectTrigger
               id="tone"
-              className={error ? 'border-red-500' : ''}
+              className={`border-2 focus:border-amber-400 ${error ? 'border-red-500 ring-red-500' : 'border-amber-200'}`}
             >
               <SelectValue placeholder="請選擇語氣" />
             </SelectTrigger>
@@ -57,9 +63,9 @@ export function ToneSelector() {
               {tones.map((tone) => (
                 <SelectItem key={tone.id} value={tone.id}>
                   <div className="flex flex-col">
-                    <span className="font-medium">{tone.name}</span>
+                    <span className="font-medium text-amber-900">{tone.name}</span>
                     {tone.description && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-amber-600">
                         {tone.description}
                       </span>
                     )}
@@ -69,7 +75,7 @@ export function ToneSelector() {
             </SelectContent>
           </Select>
           {error && (
-            <p className="text-sm text-red-500">{error.message}</p>
+            <p className="text-sm text-red-600 font-medium">❌ {error.message}</p>
           )}
         </div>
       )}

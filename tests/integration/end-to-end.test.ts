@@ -10,7 +10,7 @@
  * - 多步驟操作的一致性
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 /**
  * 集成測試：完整工作流程

@@ -49,7 +49,7 @@ describe('EvaluationForm 組件', () => {
     });
 
     it('應該驗證學生名稱長度 - 最多 10 個字', () => {
-      const studentName = '張三丰李四王五趙六'; // 超過 10 個字
+      const studentName = '張三丰李四王五趙六七八'; // 超過 10 個字
 
       expect(studentName.length).toBeGreaterThan(10);
     });

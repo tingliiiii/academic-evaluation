@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Alert } from '@/components/ui/alert';
@@ -11,8 +10,8 @@ import { extractErrorMessage } from '@/lib/errors';
 interface Evaluation {
   id: string;
   studentName: string;
-  tone: { name: string };
-  content: string;
+  toneName: string;
+  wisdoms: string[];
   createdAt: string;
 }
 
@@ -67,7 +66,7 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
   }, [handleFetchEvaluations]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('確定要刪除此評語嗎？此操作無法撤銷。')) return;
+    if (!confirm('確定要刪除此評語嗎？')) return;
 
     setDeleting(id);
     setDeleteError(null);
@@ -108,11 +107,11 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
   // 載入中狀態
   if (loading) {
     return (
-      <Card className="p-8">
+      <Card className="p-8 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
         <div className="text-center">
           <div className="inline-block animate-spin mb-4">
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-amber-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -125,7 +124,7 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
               />
             </svg>
           </div>
-          <p className="text-gray-500">載入評語歷史中...</p>
+          <p className="text-amber-700 font-medium">⏳ 載入評語歷史中...</p>
         </div>
       </Card>
     );
@@ -134,22 +133,25 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
   // 錯誤狀態
   if (error) {
     return (
-      <Card className="p-8">
-        <Alert className="bg-red-50 border-red-200 text-red-700 mb-4">
+      <Card className="p-8 bg-white border-2 border-red-300">
+        <Alert className="bg-red-50 border-2 border-red-300 text-red-700 mb-4 font-medium">
           <div className="flex items-start gap-3">
-            <span className="text-lg">✕</span>
+            <span className="text-lg">❌</span>
             <div>
-              <p className="font-medium">{error}</p>
-              <p className="text-sm mt-1">
+              <p className="font-bold">{error}</p>
+              <p className="text-sm mt-1 text-red-600">
                 {error.includes('認證') ? '請返回首頁重新登入' : '請稍後重試'}
               </p>
             </div>
           </div>
         </Alert>
         <div className="text-center">
-          <Button onClick={() => handleFetchEvaluations()}>
+          <button
+            onClick={() => handleFetchEvaluations()}
+            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all"
+          >
             重試
-          </Button>
+          </button>
         </div>
       </Card>
     );
@@ -158,11 +160,11 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
   // 空狀態
   if (!evaluations || evaluations.length === 0) {
     return (
-      <Card className="p-8">
+      <Card className="p-8 bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-amber-200">
         <div className="text-center">
-          <p className="text-3xl mb-2">📋</p>
-          <p className="text-gray-500">還沒有評語記錄</p>
-          <p className="text-sm text-gray-400 mt-2">生成第一份評語後，它將顯示在此處</p>
+          <p className="text-4xl mb-2">📋</p>
+          <p className="text-amber-900 font-bold text-lg">還沒有評語記錄</p>
+          <p className="text-sm text-amber-700 mt-2">生成第一份評語後，它將顯示在此處</p>
         </div>
       </Card>
     );
@@ -172,22 +174,22 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
     <>
       {/* 成功消息 */}
       {successMessage && (
-        <Alert className="mb-4 bg-green-50 border-green-200 text-green-700">
-          ✓ {successMessage}
+        <Alert className="mb-4 bg-green-50 border-2 border-green-300 text-green-700 font-medium">
+          ✨ {successMessage}
         </Alert>
       )}
 
       {/* 刪除錯誤消息 */}
       {deleteError && (
-        <Alert className="mb-4 bg-red-50 border-red-200 text-red-700">
+        <Alert className="mb-4 bg-red-50 border-2 border-red-300 text-red-700 font-medium">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-medium">削除失敗</p>
-              <p className="text-sm">{deleteError}</p>
+              <p className="font-bold">❌ 刪除失敗</p>
+              <p className="text-sm text-red-600">{deleteError}</p>
             </div>
             <button
               onClick={() => setDeleteError(null)}
-              className="text-red-600 hover:text-red-800"
+              className="text-red-600 hover:text-red-800 font-bold"
             >
               ✕
             </button>
@@ -196,32 +198,32 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
       )}
 
       {/* 評語表格 */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden border-2 border-amber-200">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50">
-                <TableHead>學生姓名</TableHead>
-                <TableHead>語氣</TableHead>
-                <TableHead>生成時間</TableHead>
-                <TableHead className="text-right">操作</TableHead>
+              <TableRow className="bg-gradient-to-r from-amber-100 to-orange-100 border-b-2 border-amber-200">
+                <TableHead className="text-amber-950 font-bold">學生姓名</TableHead>
+                <TableHead className="text-amber-950 font-bold">語氣</TableHead>
+                <TableHead className="text-amber-950 font-bold">生成時間</TableHead>
+                <TableHead className="text-right text-amber-950 font-bold">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {evaluations.map((evaluation) => (
                 <TableRow
                   key={evaluation.id}
-                  className={`hover:bg-gray-50 ${
+                  className={`hover:bg-amber-50 border-b border-amber-100 ${
                     deleting === evaluation.id ? 'opacity-50' : ''
                   }`}
                 >
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium text-amber-900">
                     {evaluation.studentName}
                   </TableCell>
-                  <TableCell>
-                    {evaluation.tone?.name || '-'}
+                  <TableCell className="text-amber-800">
+                    {evaluation.toneName}
                   </TableCell>
-                  <TableCell className="text-sm text-gray-500">
+                  <TableCell className="text-sm text-amber-700">
                     {new Date(evaluation.createdAt).toLocaleDateString('zh-TW', {
                       year: 'numeric',
                       month: '2-digit',
@@ -231,22 +233,20 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
                     })}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
+                    <button
                       onClick={() => setSelectedEvaluation(evaluation)}
                       disabled={deleting === evaluation.id}
+                      className="px-3 py-1 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded transition disabled:opacity-50"
                     >
                       查看
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
+                    </button>
+                    <button
                       onClick={() => handleDelete(evaluation.id)}
                       disabled={deleting === evaluation.id}
+                      className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white font-bold rounded transition disabled:opacity-50"
                     >
                       {deleting === evaluation.id ? '刪除中...' : '刪除'}
-                    </Button>
+                    </button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -256,27 +256,25 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
 
         {/* 分頁控件 */}
         {showPagination && (
-          <div className="flex justify-between items-center p-4 border-t">
-            <span className="text-sm text-gray-500">
+          <div className="flex justify-between items-center p-4 border-t-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
+            <span className="text-sm text-amber-800 font-medium">
               第 {page} 頁 (本頁 {evaluations.length} 項)
             </span>
             <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
+                className="px-3 py-1 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded transition disabled:opacity-50"
               >
                 ← 上一頁
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+              </button>
+              <button
                 onClick={() => setPage(page + 1)}
                 disabled={evaluations.length < limit}
+                className="px-3 py-1 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded transition disabled:opacity-50"
               >
                 下一頁 →
-              </Button>
+              </button>
             </div>
           </div>
         )}
@@ -285,48 +283,42 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
       {/* 詳情對話框 */}
       {selectedEvaluation && (
         <Dialog open={!!selectedEvaluation} onOpenChange={() => setSelectedEvaluation(null)}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
             <DialogHeader>
-              <DialogTitle>評語詳情</DialogTitle>
-              <DialogDescription>
-                {selectedEvaluation.studentName} - {selectedEvaluation.tone?.name}
+              <DialogTitle className="text-amber-900 text-2xl font-bold">
+                📝 評語詳情
+              </DialogTitle>
+              <DialogDescription className="text-amber-700 font-medium">
+                {selectedEvaluation.studentName} - {selectedEvaluation.toneName}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <p className="text-sm font-semibold text-gray-600 mb-2">評語內容</p>
-                <div className="bg-gray-50 p-4 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap max-h-64 overflow-y-auto">
-                  {selectedEvaluation.content}
+                <p className="text-sm font-bold text-amber-900 mb-2">📚 箴言</p>
+                <div className="text-sm text-amber-800 bg-white p-3 rounded-lg border border-amber-200">
+                  {selectedEvaluation.wisdoms.join('、')}
                 </div>
               </div>
-              <div className="text-xs text-gray-500">
-                生成時間: {new Date(selectedEvaluation.createdAt).toLocaleString('zh-TW')}
+              <div className="text-xs text-amber-700 font-medium">
+                ⏰ 生成時間: {new Date(selectedEvaluation.createdAt).toLocaleString('zh-TW')}
               </div>
 
               {/* 複製成功提示 */}
-              <div id="copy-notification" className="hidden text-xs text-green-600">
+              <div id="copy-notification" className="hidden text-xs text-green-600 font-bold">
                 ✓ 已複製到剪貼板
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  className="flex-1"
+                <button
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all"
                   onClick={() => {
-                    navigator.clipboard.writeText(selectedEvaluation.content);
-                    // 顯示複製提示
-                    const notif = document.getElementById('copy-notification');
-                    if (notif) {
-                      notif.classList.remove('hidden');
-                      setTimeout(() => {
-                        notif.classList.add('hidden');
-                      }, 2000);
-                    }
+                    window.location.href = `/dashboard/evaluation/${selectedEvaluation.id}`;
                   }}
                 >
-                  📋 複製評語
-                </Button>
-                <Button
-                  variant="destructive"
+                  👁️ 查看詳情
+                </button>
+                <button
+                  className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-all disabled:opacity-50"
                   onClick={() => {
                     handleDelete(selectedEvaluation.id);
                     setSelectedEvaluation(null);
@@ -334,7 +326,7 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
                   disabled={deleting === selectedEvaluation.id}
                 >
                   {deleting === selectedEvaluation.id ? '刪除中...' : '🗑️ 刪除'}
-                </Button>
+                </button>
               </div>
             </div>
           </DialogContent>

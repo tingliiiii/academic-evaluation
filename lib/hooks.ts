@@ -7,6 +7,17 @@ import { useEffect, useState, useCallback } from 'react';
 import { getAuthState, login as authLogin, logout as authLogout } from '@/lib/auth';
 import type { Wisdom, Tone } from '@/lib/types';
 
+export function useIsMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+  return mounted;
+}
+
 // ============================================================================
 // 認證 Hooks
 // ============================================================================
@@ -48,8 +59,8 @@ export function useAuthLogin(): UseAuthLoginResult {
     setError(null);
 
     try {
-      const success = await authLogin(password); 
-      
+      const success = await authLogin(password);
+
       if (!success) {
         setError('密碼錯誤，請重試');
         return false;
@@ -193,9 +204,9 @@ export function useGeneratePrompt(): UseGeneratePromptResult {
         const response = await fetch('/api/prompts/preview', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            studentName, 
-            wisdomIds, 
+          body: JSON.stringify({
+            studentName,
+            wisdomIds,
             toneId
           }),
         });

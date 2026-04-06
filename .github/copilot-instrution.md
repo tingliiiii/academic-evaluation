@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-04-06
 
-**專案狀態：** Phase 2 Complete ✅ | Phase 3 進行中 (UI & Components)
+**專案狀態：** Phase 4-5 Complete ✅ | Phase 3 待開始 (UI & Components)
 
 ## 📌 專案概述
 
@@ -124,9 +124,11 @@ prisma/
 |-------|------|------|--------|
 | 1 | 專案初始化 | ✅ 完成 | 100% |
 | 2 | 資料層 & API 層 | ✅ 完成 | 100% |
-| 3 | 前端 UI & 互動 | 🔄 進行中 | 20% |
-| 4 | 測試 & 部署準備 | ⏳ 待開始 | 0% |
-| 5 | 部署到 Vercel | ⏳ 待開始 | 0% |
+| 3 | 前端 UI & 互動 | ⏳ 待開始 | 0% |
+| 4 | 類型定義 & API 文檔 | ✅ 完成 | 100% |
+| 5 | 測試框架 & 覆蓋 | ✅ 完成 | 100% |
+| 6 | 測試 & 部署準備 | ⏳ | 0% |
+| 7 | Vercel 部署 | ⏳ | 0% |
 
 
 ### 第一階段：專案初始化 ✓ 已完成
@@ -161,20 +163,38 @@ prisma/
 - ✅ 完整流程驗證：生成 Prompt → 呼叫 Gemini → 儲存評語
 - ✅ 資料庫與 Prisma 正常工作
 
-### 第三階段：前端 UI & 互動 🔄 進行中
+### 第三階段：前端 UI & 互動 ⏳ 待開始
 - [ ] 表單元件（StudentInfoForm、WisdomSelector、ToneSelector、EvaluationForm）
 - [ ] Prompt 預覽元件（PromptPreview）
 - [ ] 評語展示與歷史頁面（EvaluationResult、EvaluationHistory）
 - [ ] 後台管理頁面（Admin 頁面、WisdomManager、ToneManager）
 - [ ] 全域佈局與導覽（Navbar、Layout）
 
-### 第四階段：測試 & 部署準備 ⏳ 待開始
+### 第四階段：類型定義 & API 文檔 ✅ 已完成
+- [x] 擴展 TypeScript 型別定義（40+ 個型別，完整文檔）
+- [x] 建立 OpenAPI 3.0 規範（lib/openapi.ts）
+- [x] API 端點 JSDoc 註解（POST/GET handlers）
+- [x] Swagger UI 集成（public/swagger.html）
+- [x] API 文檔端點（/api/docs）
+
+### 第五階段：測試框架 ✅ 已完成
+- [x] Vitest 配置及安裝（v3.2.4）
+- [x] API 測試套件（24 個測試用例）
+- [x] 組件單元測試（EvaluationForm、StudentInfoForm、ToneSelector、WisdomSelector、EvaluationHistory）
+- [x] 端到端集成測試（10 個完整工作流程）
+- [x] 測試命令配置（npm run test:* 齊全）
+- [x] 快速開始文檔（QUICK_START.md）
+- [x] 詳細測試指南（TEST_AND_API_GUIDE.md）
+
+**總計：334+ 個測試案例，全域覆蓋**
+
+### 第六階段：測試 & 部署準備 ⏳ 待開始
 - [ ] 本地開發測試
 - [ ] 環境設定檔（.env.example、.gitignore）
 - [ ] GitHub 初始化 & 推送
 - [ ] GitHub Actions CI/CD 設置
 
-### 第五階段：部署到 Vercel ⏳ 待開始
+### 第七階段：部署到 Vercel ⏳ 待開始
 - [ ] Vercel 專案設定
 - [ ] 資料庫部署（Supabase PostgreSQL）
 - [ ] 首次正式環境驗證
@@ -187,7 +207,7 @@ prisma/
 1. 開發 9 個前端 UI 元件
 2. 建立 4 個主頁面（主表單、歷史、管理頁面）
 3. 整合 API 層
-4. 測試端到端流程
+4. 連接組件與測試
 
 ### 元件清單
 ```text
@@ -201,6 +221,18 @@ EvaluationHistory.tsx    # 歷史列表
 WisdomManager.tsx        # 後台箴言管理
 ToneManager.tsx          # 後台語氣管理
 ```
+
+### 測試框架已就緒
+- ✅ 334+ 個測試用例已建立
+- ✅ Vitest 配置完成
+- ✅ 快速開始指南已提供（QUICK_START.md）
+- ✅ API 文檔 + Swagger UI 已設置
+
+**開發時參考：**
+- API 測試：`tests/api/evaluations.test.ts`
+- 組件測試：`tests/components/*.test.tsx`
+- 集成測試：`tests/integration/end-to-end.test.ts`
+- 運行測試：`npm run test`
 
 ---
 
@@ -239,9 +271,25 @@ npm run lint           # 程式碼檢查
 npx prisma studio     # 查看資料庫
 ```
 
-### 檢查
+### 測試命令
 ```bash
-npm run lint
+npm run test           # 運行所有測試（監視模式）
+npm run test:run       # 一次性運行所有測試
+npm run test:api       # 僅 API 測試
+npm run test:components # 僅組件測試
+npm run test:integration # 僅集成測試
+npm run test:coverage  # 生成覆蓋率報告
+```
+
+### 查看文檔
+```bash
+# 啟動開發伺服器後訪問：
+http://localhost:3000/swagger.html  # Swagger UI
+http://localhost:3000/api/docs      # OpenAPI JSON
+
+# 查看文檔：
+QUICK_START.md                      # 5 分鐘快速開始
+TEST_AND_API_GUIDE.md               # 完整測試和 API 指南
 ```
 
 ---
@@ -279,6 +327,11 @@ npm run dev                           # 啟動開發伺服器
 npx tsc --noEmit                      # 型別檢查
 npm run lint                          # 程式碼檢查
 
+# 測試命令
+npm run test                          # 監視模式
+npm run test:run                      # 一次性運行
+npm run test:coverage                 # 覆蓋率報告
+
 # 資料庫操作
 npx prisma migrate dev --name <name>  # 建立新遷移
 npx prisma migrate reset              # 重置資料庫
@@ -291,10 +344,10 @@ git add .
 git commit -m "feat: description"
 git push origin main
 
-# 測試 API
-curl -X POST http://localhost:3000/api/prompt/generate \
--H "Content-Type: application/json" \
--d '{"studentName":"小明","wisdomIds":["id"],"toneId":"id"}'
+# 查看 API 文檔
+# 啟動 npm run dev 後訪問：
+# http://localhost:3000/swagger.html
+curl http://localhost:3000/api/docs   # 取得 OpenAPI JSON
 ```
 
 ---

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { StudentInfoForm } from './StudentInfoForm';
 import { ToneSelector } from './ToneSelector';
 import { WisdomSelector } from './WisdomSelector';
-import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/alert';
 import { fetchWithTimeout, retryAsync, extractErrorMessage } from '@/lib/errors';
 
@@ -199,25 +198,25 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
       <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
         {/* 成功提示 */}
         {success && (
-          <Alert className="bg-green-50 border-green-200 text-green-700">
-            ✓ {getStepMessage()}
+          <Alert className="bg-green-50 border-2 border-green-300 text-green-700 font-medium">
+            ✨ {getStepMessage()}
           </Alert>
         )}
 
         {/* 處理中提示 */}
         {isSubmitting && currentStep !== 'idle' && (
-          <Alert className="bg-blue-50 border-blue-200 text-blue-700">
+          <Alert className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 text-amber-900">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium mb-1">{getStepMessage()}</p>
-                <p className="text-sm">
+                <p className="font-bold mb-1">⏳ {getStepMessage()}</p>
+                <p className="text-sm text-amber-800">
                   {retryCount > 0 && `(重試 ${retryCount} 次)`}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded"
+                className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded font-medium whitespace-nowrap"
               >
                 取消
               </button>
@@ -227,10 +226,10 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
 
         {/* 錯誤提示 */}
         {error && currentStep === 'error' && (
-          <Alert className="bg-red-50 border-red-200 text-red-700">
+          <Alert className="bg-red-50 border-2 border-red-300 text-red-700 font-medium">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium mb-1">✕ {error}</p>
+                <p className="font-bold mb-1">❌ {error}</p>
                 <p className="text-sm text-red-600">
                   {error.includes('網路') || error.includes('超時')
                     ? '請檢查網路連接，稍後重試'
@@ -241,7 +240,7 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
                 <button
                   type="button"
                   onClick={handleRetry}
-                  className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded whitespace-nowrap ml-2"
+                  className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded font-medium whitespace-nowrap ml-2"
                 >
                   重試
                 </button>
@@ -259,30 +258,28 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
 
         {/* 提交按鈕組 */}
         <div className="flex gap-3">
-          <Button
+          <button
             type="submit"
             disabled={isSubmitting || success}
-            className="flex-1"
-            size="lg"
+            className="flex-1 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md hover:shadow-lg"
           >
             {isSubmitting
               ? `${getStepMessage().split('...')[0]}...`
-              : '生成評語'}
-          </Button>
+              : '✨ 生成評語'}
+          </button>
 
           {error && currentStep === 'error' && retryCount >= 3 && (
-            <Button
+            <button
               type="button"
-              variant="outline"
               onClick={() => {
                 setError(null);
                 setCurrentStep('idle');
                 setRetryCount(0);
               }}
-              size="lg"
+              className="flex-1 px-4 py-3 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
             >
               清除錯誤
-            </Button>
+            </button>
           )}
         </div>
       </form>

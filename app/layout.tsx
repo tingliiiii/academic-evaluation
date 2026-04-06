@@ -29,9 +29,9 @@ export default function RootLayout({
       lang="zh-TW"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-50">
+      <body className="min-h-screen flex flex-col w-full bg-gradient-to-b from-amber-50 via-orange-50 to-yellow-50">
         <Navbar />
-        <main className="flex-1 pt-16">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
       </body>
     </html>
   );

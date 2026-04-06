@@ -48,16 +48,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="w-full max-w-sm">
-        <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-8">
+    <div className="min-h-screen flex items-center justify-center w-full">
+      <div className="w-full max-w-sm px-4">
+        <div className="bg-white rounded-xl border-2 border-amber-200 shadow-lg p-8 backdrop-blur-sm">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            <div className="text-4xl mb-4">✨</div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
               期末評語生成系統
             </h1>
-            <p className="text-sm text-slate-500">
-              我是生成期末評語小幫手
+            <p className="text-sm text-amber-700">
+              🌟 智能生成溫暖的期末評語
             </p>
           </div>
 
@@ -67,7 +68,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700 mb-2"
+                className="block text-sm font-medium text-amber-900 mb-2"
               >
                 密碼
               </label>
@@ -79,14 +80,14 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 autoFocus
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border-2 border-amber-200 rounded-lg text-gray-900 placeholder-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
               />
             </div>
 
             {/* Error Message */}
             {(error || authError) && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-                {error || authError}
+              <div className="p-3 bg-red-50 border-2 border-red-200 rounded-lg text-sm text-red-700 font-medium">
+                ❌ {error || authError}
               </div>
             )}
 
@@ -94,16 +95,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md hover:shadow-lg"
             >
-              {loading ? '登入中...' : '登入'}
+              {loading ? '⏳ 登入中...' : '✨ 登入'}
             </button>
           </form>
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-            <p className="text-xs text-slate-500">
-              忘記密碼請聯繫管理員
+          <div className="mt-8 pt-6 border-t border-amber-200 text-center">
+            <p className="text-xs text-amber-700">
+              💡 忘記密碼請聯繫管理員
             </p>
           </div>
         </div>

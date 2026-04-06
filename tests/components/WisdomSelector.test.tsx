@@ -276,7 +276,7 @@ describe('WisdomSelector 組件', () => {
    */
   describe('邊界情況', () => {
     it('應該處理空的選項列表', () => {
-      const wisdoms: any[] = [];
+      const wisdoms: Array<{ id: string; content: string }> = [];
 
       // 應該顯示 "暫無可用箴言"
       expect(wisdoms.length).toBe(0);

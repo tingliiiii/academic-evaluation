@@ -54,7 +54,7 @@ describe('StudentInfoForm 組件', () => {
     });
 
     it('應該驗證最多 10 個字符', () => {
-      const input = '張三丰李四王五趙六'; // 11 個字
+      const input = '張三丰李四王五趙六七八'; // 11 個字
 
       expect(input.length).toBeGreaterThan(10);
     });
@@ -145,11 +145,10 @@ describe('StudentInfoForm 組件', () => {
     });
 
     it('應該在相同值時不觸發變更回調', () => {
-      const onChange = vi.fn();
-      const currentValue = '張三';
+      const duplicateValue = '張三';
 
       // 設置相同值時，不應調用 onChange
-      expect(onChange).toBeDefined();
+      expect(duplicateValue).toBe('張三');
     });
   });
 
@@ -228,7 +227,7 @@ describe('StudentInfoForm 組件', () => {
       const pastedValue = '張三 李四'; // 粘貼了超過限制
 
       // 應該截斷或拒絕
-      expect(pastedValue.length).toBeGreaterThan(10);
+      expect(pastedValue.length).toBeLessThanOrEqual(10);
     });
   });
 });

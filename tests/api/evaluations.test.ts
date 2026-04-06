@@ -26,7 +26,7 @@ describe('POST /api/evaluations', () => {
       studentName: '張三',
       toneId: 'friendly',
       wisdomIds: ['wisdom_1', 'wisdom_2'],
-      prompt: '這是一個測試提示詞，包含足夠的內容來生成一份期末評語。',
+      prompt: '這是一個測試提示詞，包含足夠的內容來生成一份高品質的期末評語。請根據提供的學生姓名、箴言和語氣風格，生成一份詳細而有意義的評語。',
     };
 
     // 預期行為
@@ -64,7 +64,7 @@ describe('POST /api/evaluations', () => {
    * 驗證失敗 - 學生名稱過長
    */
   it('應該驗證失敗 - 學生名稱超過 10 個字', async () => {
-    const studentName = '張三丰李四王五趙六'; // 超過 10 個字
+    const studentName = '張三丰李四王五趙六七八'; // 超過 10 個字
 
     // 應該驗證失敗
     expect(studentName.length).toBeGreaterThan(10);

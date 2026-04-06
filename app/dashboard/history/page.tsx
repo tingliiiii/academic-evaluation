@@ -21,13 +21,17 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto py-8 px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-2">📋 評語歷史</h1>
-        <p className="text-gray-500 mb-8">查看和管理所有生成的評語記錄</p>
+    <div className="w-full mx-auto max-w-4xl py-8 px-4">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent mb-2">
+            📋 評語歷史
+          </h1>
+          <p className="text-amber-700 font-medium">
+            ✨ 查看和管理所有生成的評語記錄
+          </p>
+        </div>
         
         <EvaluationHistory limit={20} showPagination={true} />
-      </main>
-    </div>
-  );
-}
+      </div>
+    );
+  }

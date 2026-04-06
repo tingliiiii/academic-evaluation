@@ -200,7 +200,7 @@ describe('ToneSelector 組件', () => {
    */
   describe('邊界情況', () => {
     it('應該處理空的選項列表', () => {
-      const tones: any[] = [];
+      const tones: Array<{ id: string; name: string }> = [];
 
       // 應該顯示 "暫無可用選項"
       expect(tones.length).toBe(0);

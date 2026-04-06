@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks';
@@ -16,9 +16,17 @@ export function Navbar() {
   const pathname = usePathname();
   const { isLoggedIn, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // 如果未登入，不顯示導航欄
-  if (!isLoggedIn) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 如果還沒掛載，或者未登入，都先回傳 null
+  if (!mounted || !isLoggedIn) {
     return null;
   }
 
@@ -45,16 +53,16 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 right-0 bg-white border-b-2 border-amber-200 shadow-md z-50 backdrop-blur-sm">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo & Brand */}
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-sm">
-              TZ
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
+              ✨
             </div>
-            <span className="hidden sm:inline font-semibold text-gray-900 text-sm">
-              期末評語系統
+            <span className="hidden sm:inline font-bold text-lg bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+              評語系統
             </span>
           </Link>
 
@@ -64,11 +72,10 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(link.href)
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive(link.href)
+                  ? 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-900 border border-amber-300'
+                  : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
+                  }`}
               >
                 {link.label}
               </Link>
@@ -81,7 +88,7 @@ export function Navbar() {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-gray-600 hover:text-red-600 hover:bg-red-50"
+              className="text-amber-700 hover:text-orange-600 hover:bg-orange-50 font-medium"
             >
               🚪 登出
             </Button>
@@ -90,7 +97,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-gray-100 rounded-md"
+            className="md:hidden p-2 hover:bg-amber-100 rounded-lg text-amber-700"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? '✕' : '☰'}
@@ -105,11 +112,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(link.href)
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive(link.href)
+                  ? 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-900 border border-amber-300'
+                  : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
+                  }`}
               >
                 {link.label}
               </Link>
@@ -119,7 +125,7 @@ export function Navbar() {
                 setIsMenuOpen(false);
                 handleLogout();
               }}
-              className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md"
+              className="w-full text-left px-4 py-2 text-sm font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
             >
               🚪 登出
             </button>

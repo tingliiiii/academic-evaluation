@@ -53,10 +53,9 @@ describe('EvaluationHistory 組件', () => {
     });
 
     it('應該格式化日期為可讀格式', () => {
-      const date = new Date('2024-05-05T14:30:00');
-      const formatted = '2024-05-05 14:30'; // 或 "5 月 5 日"
+      const date = new Date('2024-05-05T14:30:00').toLocaleString('zh-TW');
 
-      expect(formatted).toContain('2024');
+      expect(date).toContain('2024');
     });
 
     it('應該截斷長的評語摘要', () => {
@@ -151,10 +150,10 @@ describe('EvaluationHistory 組件', () => {
 
     it('應該加載第 2 頁評語', () => {
       const page = 2;
-      const pageSize = 10;
+      const totalPerPage = 10;
 
       // API 請求：?page=2&pageSize=10
-      expect(page).toBeGreaterThan(1);
+      expect(page * totalPerPage).toBeGreaterThan(10);
     });
 
     it('應該禁用 "上一頁" 在第 1 頁', () => {
