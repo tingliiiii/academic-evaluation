@@ -190,7 +190,7 @@ export function useGeneratePrompt(): UseGeneratePromptResult {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/prompt/generate', {
+        const response = await fetch('/api/prompts/preview', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -267,7 +267,7 @@ export function useGenerateEvaluation(): UseGenerateEvaluationResult {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/evaluation/generate', {
+        const response = await fetch('/api/evaluations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -355,7 +355,7 @@ export function useFetchEvaluations(
         });
 
         const response = await fetch(
-          `/api/evaluation/generate/list?${params.toString()}`
+          `/api/evaluations?${params.toString()}`
         );
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
