@@ -1,6 +1,5 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useState } from 'react';
@@ -22,66 +21,47 @@ export function PromptPreview({ promptContent, studentName }: PromptPreviewProps
 
   return (
     <>
-      <Card className="p-4 bg-blue-50 border-blue-200">
-        <div className="flex items-start justify-between gap-4">
+      <div className="p-6 rounded-[24px] bg-[#EFEBF5] shadow-clay-pressed">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
           <div className="flex-1">
-            <h3 className="font-semibold text-blue-900 mb-2">
-              📋 生成的提示詞
+            <h3 className="font-bold text-clay-foreground mb-2 flex items-center gap-2">
+              <span>🤖</span> AI 提示詞預覽
             </h3>
             {studentName && (
-              <p className="text-sm text-blue-700 mb-2">
-                學生: <span className="font-medium">{studentName}</span>
+              <p className="text-sm text-clay-muted font-bold mb-2">
+                目標對象: <span className="text-clay-accent">{studentName}</span>
               </p>
             )}
-            <p className="text-sm text-blue-700 line-clamp-3">
+            <p className="text-sm text-clay-muted/80 font-medium line-clamp-2">
               {promptContent}
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCopy}
-              className="whitespace-nowrap"
-            >
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button variant="secondary" size="sm" onClick={handleCopy} className="flex-1 sm:flex-none">
               {isCopied ? '✓ 已複製' : '📋 複製'}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsDialogOpen(true)}
-              className="whitespace-nowrap"
-            >
-              👁 查看全部
+            <Button variant="secondary" size="sm" onClick={() => setIsDialogOpen(true)} className="flex-1 sm:flex-none">
+              👁 展開
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* 全文顯示對話框 */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] max-w-2xl p-8">
           <DialogHeader>
-            <DialogTitle>完整提示詞</DialogTitle>
+            <DialogTitle className="text-clay-foreground font-heading font-black text-2xl">
+              完整提示詞 (Prompt)
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            {studentName && (
-              <div>
-                <p className="text-sm font-semibold text-gray-600">學生名稱</p>
-                <p className="text-base text-gray-900">{studentName}</p>
-              </div>
-            )}
-            <div>
-              <p className="text-sm font-semibold text-gray-600 mb-2">提示詞內容</p>
-              <div className="bg-gray-50 p-4 rounded border border-gray-200 text-sm text-gray-700 whitespace-pre-wrap">
+          <div className="space-y-6 mt-2">
+            <div className="p-5 bg-[#EFEBF5] rounded-[20px] shadow-clay-pressed max-h-[50vh] overflow-y-auto">
+              <p className="text-sm font-medium text-clay-foreground whitespace-pre-wrap leading-relaxed">
                 {promptContent}
-              </div>
+              </p>
             </div>
-            <Button
-              onClick={handleCopy}
-              className="w-full"
-            >
-              {isCopied ? '✓ 已複製' : '📋 複製提示詞'}
+            <Button onClick={handleCopy} className="w-full">
+              {isCopied ? '✓ 已成功複製提示詞' : '📋 複製提示詞'}
             </Button>
           </div>
         </DialogContent>

@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface EvaluationResultProps {
   studentName: string;
@@ -40,12 +39,10 @@ export function EvaluationResult({
   };
 
   const handleExport = () => {
-    // 生成可下載的文字檔案
     const element = document.createElement('a');
     const file = new Blob([
       `學生姓名：${studentName}\n語氣：${toneName}\n${createdAt ? `生成時間：${createdAt}\n` : ''}---\n\n${content}`,
     ], { type: 'text/plain;charset=utf-8' });
-    
     element.href = URL.createObjectURL(file);
     element.download = `評語_${studentName}_${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(element);
@@ -56,7 +53,6 @@ export function EvaluationResult({
 
   const handleDelete = async () => {
     if (!evaluationId || !onDelete) return;
-
     try {
       setDeleteError(null);
       await onDelete(evaluationId);
@@ -69,143 +65,103 @@ export function EvaluationResult({
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
     return new Intl.DateTimeFormat('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+    }).format(new Date(dateString));
   };
 
   return (
-    <div className="space-y-4">
-      {/* 頭部資訊 */}
-      <Card className="p-6 bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 shadow-md">
-        <div className="space-y-3">
-          <div className="flex justify-between items-start">
-            <div>
-              <h2 className="text-3xl font-bold text-amber-950">
-                👤 {studentName}
-              </h2>
-              <p className="text-sm text-amber-900 mt-1">
-                🎭 語氣：<span className="font-bold">{toneName}</span>
+    <div className="space-y-6">
+      {/* 頭部資訊：凹陷設計 */}
+      <div className="p-6 sm:p-8 rounded-[32px] bg-[#EFEBF5] shadow-clay-pressed">
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-heading font-black text-clay-foreground">
+              👤 {studentName}
+            </h2>
+            <p className="text-base text-clay-muted">
+              🎭 語氣：<span className="font-bold text-clay-accent">{toneName}</span>
+            </p>
+            {createdAt && (
+              <p className="text-sm text-clay-muted/80 font-bold tracking-wide">
+                ⏰ 生成時間：{formatDate(createdAt)}
               </p>
-              {createdAt && (
-                <p className="text-xs text-amber-800 mt-1 font-medium">
-                  ⏰ 生成時間：{formatDate(createdAt)}
-                </p>
-              )}
-            </div>
-            <div className="text-4xl">✨</div>
+            )}
           </div>
+          <div className="text-4xl animate-clay-breathe">✨</div>
         </div>
-      </Card>
+      </div>
 
-      {/* 評語內容 */}
-      <Card className="p-6 bg-white border-2 border-amber-200 shadow-md">
-        <div className="prose prose-sm max-w-none whitespace-pre-wrap text-amber-900 leading-relaxed font-medium">
+      {/* 評語內容：浮起毛玻璃卡片 */}
+      <div className="p-6 sm:p-8 rounded-[32px] bg-white/80 backdrop-blur-xl shadow-clay-card transition-all duration-500 hover:-translate-y-2">
+        <div className="whitespace-pre-wrap text-clay-foreground text-lg leading-relaxed font-medium">
           {content}
         </div>
-      </Card>
+      </div>
 
-      {/* 操作按鈕 */}
-      <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={handleCopy}
-          className="flex-1 min-w-[120px] px-4 py-2 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
-        >
-          {isCopied ? '✓ 已複製' : '📋 複製'}
-        </button>
-        <button
-          onClick={() => setIsExporting(true)}
-          className="flex-1 min-w-[120px] px-4 py-2 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
-        >
-          💾 匯出
-        </button>
+      {/* 操作按鈕群 */}
+      <div className="flex gap-3 flex-wrap pt-2">
+        <Button onClick={handleCopy} variant={isCopied ? "default" : "secondary"} className="flex-1 min-w-[120px]">
+          {isCopied ? '✓ 已複製' : '📋 複製評語'}
+        </Button>
+        <Button onClick={() => setIsExporting(true)} variant="secondary" className="flex-1 min-w-[120px]">
+          💾 匯出檔案
+        </Button>
         {evaluationId && onDelete && (
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="flex-1 min-w-[120px] px-4 py-2 border-2 border-red-300 bg-white hover:bg-red-50 text-red-600 font-bold rounded-lg transition-all"
-          >
+          <Button onClick={() => setShowDeleteConfirm(true)} variant="destructive" className="flex-1 min-w-[120px]">
             🗑️ 刪除
-          </button>
-        )}
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="flex-1 min-w-[120px] px-4 py-2 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
-          >
-            ← 返回
-          </button>
+          </Button>
         )}
       </div>
 
       {/* 匯出確認對話框 */}
       <Dialog open={isExporting} onOpenChange={setIsExporting}>
-        <DialogContent className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
+        <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] sm:rounded-[40px] p-8">
           <DialogHeader>
-            <DialogTitle className="text-amber-900 text-xl font-bold">
+            <DialogTitle className="text-clay-foreground text-2xl font-black font-heading">
               💾 確認匯出
             </DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-amber-800 mb-4 font-medium">
-            評語將被匯出為文字檔案。檔案名稱為：
-            <br />
-            <code className="bg-white px-2 py-1 rounded mt-2 block border border-amber-200 text-amber-950 font-bold">
+          <div className="space-y-6 mt-2">
+            <p className="text-base text-clay-muted font-medium">
+              評語將被匯出為文字檔案。檔案名稱為：
+            </p>
+            <div className="p-4 bg-[#EFEBF5] rounded-[16px] shadow-clay-pressed text-clay-foreground font-bold break-all">
               評語_{studentName}_{new Date().toISOString().split('T')[0]}.txt
-            </code>
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={handleExport}
-              className="flex-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all"
-            >
-              確認匯出
-            </button>
-            <button
-              onClick={() => setIsExporting(false)}
-              className="flex-1 px-4 py-2 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
-            >
-              取消
-            </button>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleExport} className="flex-1">確認匯出</Button>
+              <Button onClick={() => setIsExporting(false)} variant="secondary" className="flex-1">取消</Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* 刪除確認對話框 */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-300">
+        <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] sm:rounded-[40px] p-8">
           <DialogHeader>
-            <DialogTitle className="text-red-900 text-xl font-bold">
+            <DialogTitle className="text-clay-secondary text-2xl font-black font-heading">
               🗑️ 確認刪除
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6 mt-2">
             {deleteError && (
-              <Alert className="bg-red-100 border-2 border-red-300 text-red-700 font-bold">
+              <div className="p-4 bg-pink-50 rounded-[16px] text-clay-secondary font-bold">
                 ❌ {deleteError}
-              </Alert>
+              </div>
             )}
-            <p className="text-sm text-red-800 font-medium">
-              您確定要刪除 <span className="font-bold">{studentName}</span> 的評語嗎？
-              <br />
-              此操作無法撤銷。
+            <p className="text-lg text-clay-foreground font-medium">
+              您確定要刪除 <span className="font-bold text-clay-accent">{studentName}</span> 的評語嗎？<br/>此操作無法撤銷。
             </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 border-2 border-red-300 bg-white hover:bg-red-50 text-red-700 font-bold rounded-lg transition-all"
-              >
-                取消
-              </button>
-              <button
-                onClick={handleDelete}
-                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
-              >
+            <div className="flex gap-3 pt-4">
+              <Button onClick={() => setShowDeleteConfirm(false)} variant="secondary" className="flex-1">
+                保留
+              </Button>
+              <Button onClick={handleDelete} variant="destructive" className="flex-1">
                 是的，刪除
-              </button>
+              </Button>
             </div>
           </div>
         </DialogContent>

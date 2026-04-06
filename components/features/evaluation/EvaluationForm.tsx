@@ -6,14 +6,23 @@ import { useRouter } from 'next/navigation';
 import { StudentInfoForm } from './StudentInfoForm';
 import { ToneSelector } from './ToneSelector';
 import { WisdomSelector } from './WisdomSelector';
-import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button'; // 引入黏土按鈕
 import { fetchWithTimeout, retryAsync, extractErrorMessage } from '@/lib/errors';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 interface EvaluationFormProps {
   onSuccess?: (evaluationId: string) => void;
 }
 
-type SubmitStep = 'idle' | 'generating-prompt' | 'calling-api' | 'saving' | 'success' | 'error';
+type SubmitStep = 'idle' | 'generating-prompt' | 'confirming-prompt' | 'calling-api' | 'saving' | 'success' | 'error';
 
 export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
   const router = useRouter();
@@ -24,8 +33,17 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
   const [retryCount, setRetryCount] = useState(0);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Prompt 相關狀態
+  const [showPromptDialog, setShowPromptDialog] = useState(false);
+  const [editablePrompt, setEditablePrompt] = useState('');
+  const [pendingFormData, setPendingFormData] = useState<{
+    studentName: string;
+    selectedTone: string;
+    selectedWisdoms: string[];
+  } | null>(null);
+
   const methods = useForm({
-    mode: 'onBlur',
+    mode: 'onSubmit', // 改為 onSubmit，延遲驗證到按下按鈕時
     defaultValues: {
       studentName: '',
       selectedTone: '',
@@ -35,25 +53,24 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
 
   const getStepMessage = (): string => {
     switch (currentStep) {
-      case 'generating-prompt':
-        return '正在生成提示詞...';
-      case 'calling-api':
-        return 'Gemini AI 生成中，請耐心等待...';
-      case 'saving':
-        return '正在保存評語...';
-      case 'success':
-        return '✓ 評語生成成功！正在導向詳情頁...';
-      default:
-        return '';
+      case 'generating-prompt': return '正在組合提示詞...';
+      case 'confirming-prompt': return '等待確認提示詞...';
+      case 'calling-api': return 'AI 靈感湧現中，請稍候...';
+      case 'saving': return '正在保存溫暖的評語...';
+      case 'success': return '✓ 生成成功！準備為您呈現...';
+      default: return '';
     }
   };
 
   const handleRetry = async () => {
     setRetryCount((prev) => prev + 1);
-    methods.handleSubmit(onSubmit)();
+    if (pendingFormData) {
+      await handleConfirmPrompt(editablePrompt);
+    }
   };
 
-  const onSubmit = async (data: {
+  // 第一步：生成 Prompt（需要驗證表單）
+  const onGeneratePrompt = async (data: {
     studentName: string;
     selectedTone: string;
     selectedWisdoms: string[];
@@ -63,64 +80,12 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
     setSuccess(false);
     setCurrentStep('generating-prompt');
     setRetryCount(0);
-
-    // 創建新的 abort controller
     abortControllerRef.current = new AbortController();
 
     try {
-      // Step 1: 生成提示詞
-      let prompt = '';
-
-      try {
-        const promptResponse = await retryAsync(
-          () =>
-            fetchWithTimeout(`/api/prompts/preview`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
-              },
-              body: JSON.stringify({
-                studentName: data.studentName,
-                toneId: data.selectedTone,
-                wisdomIds: data.selectedWisdoms,
-              }),
-              timeout: 30000,
-              signal: abortControllerRef.current!.signal,
-            }),
-          {
-            maxRetries: 2,
-            delayMs: 1000,
-            onRetry: (attempt) => {
-              console.warn(`提示詞生成失敗，進行第 ${attempt} 次重試...`);
-            },
-          }
-        );
-
-        if (!promptResponse.ok) {
-          const errorData = await promptResponse.json();
-          throw new Error(
-            errorData.error || '提示詞生成失敗，請檢查輸入'
-          );
-        }
-
-        const promptData = await promptResponse.json();
-        if (!promptData.success || !promptData.data?.prompt) {
-          throw new Error('提示詞生成失敗，請稍後重試');
-        }
-
-        prompt = promptData.data.prompt;
-      } catch (err) {
-        const msg = extractErrorMessage(err);
-        throw new Error(`提示詞生成失敗: ${msg}`);
-      }
-
-      // Step 2: 調用 API 生成評語
-      setCurrentStep('calling-api');
-
-      const evaluationResponse = await retryAsync(
+      const promptResponse = await retryAsync(
         () =>
-          fetchWithTimeout(`/api/evaluations`, {
+          fetchWithTimeout(`/api/prompts/preview`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -130,56 +95,86 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
               studentName: data.studentName,
               toneId: data.selectedTone,
               wisdomIds: data.selectedWisdoms,
-              prompt,
             }),
-            timeout: 120000, // Gemini API 可能需要較長時間
+            timeout: 30000,
             signal: abortControllerRef.current!.signal,
           }),
-        {
-          maxRetries: 2,
-          delayMs: 2000,
-          onRetry: (attempt) => {
-            console.warn(`評語生成失敗，進行第 ${attempt} 次重試...`);
-          },
-        }
+        { maxRetries: 2, delayMs: 1000 }
       );
 
-      if (!evaluationResponse.ok) {
-        const errorData = await evaluationResponse.json().catch(() => ({}));
-        const errorMsg =
-          errorData.error ||
-          `HTTP ${evaluationResponse.status} 錯誤`;
-        throw new Error(errorMsg);
+      if (!promptResponse.ok) throw new Error('提示詞生成失敗，請檢查輸入');
+      const promptData = await promptResponse.json();
+      if (!promptData.success || !promptData.data?.prompt) 
+        throw new Error('提示詞生成失敗，請稍後重試');
+      
+      const prompt = promptData.data.prompt;
+      setEditablePrompt(prompt);
+      setPendingFormData(data);
+      setCurrentStep('confirming-prompt');
+      setShowPromptDialog(true);
+      setIsSubmitting(false);
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('已取消生成');
+      } else {
+        setError(extractErrorMessage(err));
       }
+      setCurrentStep('error');
+      setIsSubmitting(false);
+    }
+  };
 
+  // 第二步：確認 Prompt 並調用 GEMINI API
+  const handleConfirmPrompt = async (prompt: string) => {
+    if (!pendingFormData) return;
+
+    setIsSubmitting(true);
+    setError(null);
+    setShowPromptDialog(false);
+    setCurrentStep('calling-api');
+    abortControllerRef.current = new AbortController();
+
+    try {
+      const evaluationResponse = await retryAsync(
+        () =>
+          fetchWithTimeout(`/api/evaluations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+            },
+            body: JSON.stringify({
+              studentName: pendingFormData.studentName,
+              toneId: pendingFormData.selectedTone,
+              wisdomIds: pendingFormData.selectedWisdoms,
+              prompt,
+            }),
+            timeout: 120000,
+            signal: abortControllerRef.current!.signal,
+          }),
+        { maxRetries: 2, delayMs: 2000 }
+      );
+
+      if (!evaluationResponse.ok) throw new Error(`API 錯誤`);
       const result = await evaluationResponse.json();
-
-      if (!result.success || !result.data?.id) {
+      if (!result.success || !result.data?.id) 
         throw new Error(result.error || '評語生成失敗');
-      }
 
-      // Step 3: 成功
       setCurrentStep('success');
       setSuccess(true);
       methods.reset();
+      setPendingFormData(null);
 
-      // 導向詳情頁
       setTimeout(() => {
-        if (onSuccess) {
-          onSuccess(result.data.id);
-        } else {
-          router.push(`/dashboard/evaluation/${result.data.id}`);
-        }
+        if (onSuccess) onSuccess(result.data.id);
+        else router.push(`/dashboard/evaluation/${result.data.id}`);
       }, 1500);
     } catch (err) {
-      // 處理取消請求
       if (err instanceof Error && err.name === 'AbortError') {
-        setError('請求已取消');
+        setError('已取消生成');
       } else {
-        const errorMsg = extractErrorMessage(err);
-        setError(errorMsg);
+        setError(extractErrorMessage(err));
       }
-
       setCurrentStep('error');
     } finally {
       setIsSubmitting(false);
@@ -190,99 +185,136 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
     abortControllerRef.current?.abort();
     setIsSubmitting(false);
     setCurrentStep('idle');
-    setError('已取消');
+    setError('已中斷生成過程');
+  };
+
+  const handleClosePromptDialog = () => {
+    setShowPromptDialog(false);
+    setCurrentStep('idle');
+    setIsSubmitting(false);
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
-        {/* 成功提示 */}
-        {success && (
-          <Alert className="bg-green-50 border-2 border-green-300 text-green-700 font-medium">
-            ✨ {getStepMessage()}
-          </Alert>
-        )}
-
-        {/* 處理中提示 */}
-        {isSubmitting && currentStep !== 'idle' && (
-          <Alert className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 text-amber-900">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-bold mb-1">⏳ {getStepMessage()}</p>
-                <p className="text-sm text-amber-800">
-                  {retryCount > 0 && `(重試 ${retryCount} 次)`}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded font-medium whitespace-nowrap"
-              >
-                取消
-              </button>
+    <>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onGeneratePrompt)} className="space-y-8 max-w-2xl mx-auto">
+          
+          {/* 狀態提示區塊 (改為無邊框黏土風格) */}
+          {success && (
+            <div className="p-5 bg-green-50 rounded-[20px] shadow-clay-pressed text-emerald-600 font-bold flex items-center gap-3">
+              <span className="text-xl">✨</span> {getStepMessage()}
             </div>
-          </Alert>
-        )}
+          )}
 
-        {/* 錯誤提示 */}
-        {error && currentStep === 'error' && (
-          <Alert className="bg-red-50 border-2 border-red-300 text-red-700 font-medium">
-            <div className="flex items-center justify-between">
+          {isSubmitting && currentStep !== 'idle' && currentStep !== 'confirming-prompt' && (
+            <div className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 rounded-[20px] shadow-clay-pressed text-clay-accent flex items-center justify-between">
               <div>
-                <p className="font-bold mb-1">❌ {error}</p>
-                <p className="text-sm text-red-600">
-                  {error.includes('網路') || error.includes('超時')
-                    ? '請檢查網路連接，稍後重試'
-                    : '請檢查輸入數據是否正確'}
+                <p className="font-bold text-lg mb-1 flex items-center gap-2">
+                  <span className="animate-spin text-xl">⏳</span> {getStepMessage()}
                 </p>
+                {retryCount > 0 && <p className="text-sm font-medium opacity-80">(正在進行第 {retryCount} 次重試)</p>}
+              </div>
+              <Button type="button" variant="secondary" size="sm" onClick={handleCancel}>
+                中斷
+              </Button>
+            </div>
+          )}
+
+          {error && currentStep === 'error' && (
+            <div className="p-5 bg-pink-50 rounded-[20px] shadow-clay-pressed text-clay-secondary flex items-center justify-between">
+              <div>
+                <p className="font-bold text-lg mb-1">❌ {error}</p>
+                <p className="text-sm font-medium opacity-80">請稍後再試，或檢查輸入內容。</p>
               </div>
               {retryCount < 3 && (
-                <button
-                  type="button"
-                  onClick={handleRetry}
-                  className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded font-medium whitespace-nowrap ml-2"
-                >
+                <Button type="button" variant="destructive" size="sm" onClick={handleRetry}>
                   重試
-                </button>
+                </Button>
               )}
             </div>
-          </Alert>
-        )}
-
-        {/* 表單欄位 */}
-        <fieldset disabled={isSubmitting || success} className="space-y-6">
-          <StudentInfoForm />
-          <ToneSelector />
-          <WisdomSelector />
-        </fieldset>
-
-        {/* 提交按鈕組 */}
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={isSubmitting || success}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md hover:shadow-lg"
-          >
-            {isSubmitting
-              ? `${getStepMessage().split('...')[0]}...`
-              : '✨ 生成評語'}
-          </button>
-
-          {error && currentStep === 'error' && retryCount >= 3 && (
-            <button
-              type="button"
-              onClick={() => {
-                setError(null);
-                setCurrentStep('idle');
-                setRetryCount(0);
-              }}
-              className="flex-1 px-4 py-3 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all"
-            >
-              清除錯誤
-            </button>
           )}
-        </div>
-      </form>
-    </FormProvider>
+
+          {/* 表單欄位群組 */}
+          <fieldset disabled={isSubmitting || success} className="space-y-8">
+            <StudentInfoForm />
+            <ToneSelector />
+            <WisdomSelector />
+          </fieldset>
+
+          {/* 提交按鈕區域 */}
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              disabled={isSubmitting || success}
+              className="flex-1 text-lg"
+              size="lg"
+            >
+              {isSubmitting ? `${getStepMessage().split('...')[0]}...` : '✨ 立即生成評語'}
+            </Button>
+
+            {error && currentStep === 'error' && retryCount >= 3 && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                onClick={() => {
+                  setError(null);
+                  setCurrentStep('idle');
+                  setRetryCount(0);
+                }}
+              >
+                清除錯誤
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
+
+      {/* Prompt 預覽和編輯對話框 */}
+      <Dialog open={showPromptDialog} onOpenChange={handleClosePromptDialog}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">確認提示詞</DialogTitle>
+            <DialogDescription>
+              請檢查下方生成的提示詞。您可以修改它以獲得更滿意的評語結果。
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-6">
+            <label className="block">
+              <span className="text-sm font-bold text-clay-foreground mb-2 block">生成的提示詞</span>
+              <Textarea
+                value={editablePrompt}
+                onChange={(e) => setEditablePrompt(e.target.value)}
+                placeholder="提示詞內容..."
+                rows={12}
+                className="font-mono text-sm resize-none rounded-[12px]"
+              />
+              <p className="text-xs text-clay-muted mt-2">
+                💡 提示：您可以編輯上方的提示詞以調整評語的風格或內容
+              </p>
+            </label>
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleClosePromptDialog}
+            >
+              返回修改
+            </Button>
+            <Button
+              type="button"
+              onClick={() => handleConfirmPrompt(editablePrompt)}
+              disabled={!editablePrompt.trim()}
+              className="text-lg"
+            >
+              ✨ 確認並生成評語
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

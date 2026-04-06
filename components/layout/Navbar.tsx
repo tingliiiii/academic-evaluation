@@ -1,8 +1,3 @@
-/**
- * 全域應用導航欄 - 簡潔教師應用設計
- * 固定在頂部，包含應用名稱、導航鏈接和登出功能
- */
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -25,7 +20,6 @@ export function Navbar() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 如果還沒掛載，或者未登入，都先回傳 null
   if (!mounted || !isLoggedIn) {
     return null;
   }
@@ -35,11 +29,13 @@ export function Navbar() {
     router.push('/');
   };
 
-  // 判斷是否是當前活躍的路由
   const isActive = (href: string): boolean => {
+    if (href === '/dashboard/history') {
+      return pathname === '/dashboard/history';
+    } 
     if (href === '/dashboard') {
-      return pathname === '/dashboard' || pathname === '/dashboard/history' || pathname?.startsWith('/dashboard');
-    }
+      return pathname === '/dashboard' || pathname?.startsWith('/dashboard/evaluation');
+    } 
     if (href === '/admin') {
       return pathname?.startsWith('/admin');
     }
@@ -47,91 +43,107 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { href: '/dashboard', label: '✏️ 生成評語' },
-    { href: '/dashboard/history', label: '📋 歷史記錄' },
-    { href: '/admin', label: '⚙️ 系統管理' },
+    { href: '/dashboard', label: '生成評語' },
+    { href: '/dashboard/history', label: '歷史記錄' },
+    { href: '/admin', label: '系統管理' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white border-b-2 border-amber-200 shadow-md z-50 backdrop-blur-sm">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo & Brand */}
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
-              ✨
+    <>
+      {/* 隱形佔位區塊：解決 Fixed Navbar 遮擋下方內容的問題 */}
+      <div className="h-28 sm:h-36 w-full shrink-0" aria-hidden="true" />
+
+      {/* 漂浮膠囊導航列 */}
+      <nav className="fixed top-4 left-4 right-4 sm:top-6 sm:left-8 sm:right-8 bg-white/70 backdrop-blur-xl shadow-clay-card rounded-[32px] sm:rounded-[40px] z-50 transition-all duration-500">
+        <div className="w-full px-4 sm:px-8">
+          <div className="flex justify-between items-center h-16 sm:h-20">
+            
+            {/* Logo & Brand */}
+            <Link href="/dashboard" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] rounded-2xl sm:rounded-[20px] flex items-center justify-center text-white text-lg sm:text-xl shadow-clay-btn transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
+                ✨
+              </div>
+              <span className="hidden sm:inline font-heading font-black tracking-tight text-xl bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent">
+                評語系統
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-5 py-3 rounded-[20px] text-base font-bold transition-all duration-200 ${
+                    isActive(link.href)
+                      ? 'bg-[#EFEBF5] text-clay-accent shadow-clay-pressed' // 點擊凹陷狀態
+                      : 'text-clay-muted hover:text-clay-accent hover:bg-clay-accent/5 hover:-translate-y-1'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-            <span className="hidden sm:inline font-bold text-lg bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              評語系統
-            </span>
-          </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive(link.href)
-                  ? 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-900 border border-amber-300'
-                  : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
-                  }`}
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="text-clay-muted hover:text-[#DB2777] hover:bg-[#DB2777]/10"
               >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+                登出
+              </Button>
+            </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className="text-amber-700 hover:text-orange-600 hover:bg-orange-50 font-medium"
-            >
-              🚪 登出
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-amber-100 rounded-lg text-amber-700"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? '✕' : '☰'}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden pb-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive(link.href)
-                  ? 'bg-gradient-to-r from-amber-100 to-orange-100 text-amber-900 border border-amber-300'
-                  : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
-                  }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {/* Mobile Menu Button */}
             <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                handleLogout();
-              }}
-              className="w-full text-left px-4 py-2 text-sm font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-3 bg-white shadow-clay-btn rounded-[16px] text-clay-accent active:scale-95 active:shadow-clay-pressed transition-all"
+              aria-label="Toggle menu"
             >
-              🚪 登出
+              <div className="w-5 h-5 flex flex-col justify-center gap-1.5">
+                <span className={`block h-0.5 w-full bg-current rounded-full transition-transform ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                <span className={`block h-0.5 w-full bg-current rounded-full transition-opacity ${isMenuOpen ? 'opacity-0' : ''}`} />
+                <span className={`block h-0.5 w-full bg-current rounded-full transition-transform ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              </div>
             </button>
           </div>
-        )}
-      </div>
-    </nav>
+
+          {/* Mobile Navigation Dropdown */}
+          {isMenuOpen && (
+            <div className="md:hidden pb-6 pt-2 space-y-3 px-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-5 py-4 rounded-[20px] text-base font-bold transition-all ${
+                    isActive(link.href)
+                      ? 'bg-[#EFEBF5] text-clay-accent shadow-clay-pressed'
+                      : 'text-clay-muted hover:bg-clay-accent/5 hover:text-clay-accent'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="pt-2">
+                <Button
+                  variant="destructive"
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLogout();
+                  }}
+                >
+                  🚪 登出系統
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+    </>
   );
 }

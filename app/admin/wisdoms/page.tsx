@@ -5,8 +5,9 @@ import { useAuth, useIsMounted } from '@/lib/hooks';
 import { useEffect } from 'react';
 import { WisdomManager } from '@/components/features/admin/WisdomManager';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-export default function WisdomsPage() {
+export default function WisdomsAdminPage() {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const isMounted = useIsMounted();
@@ -22,26 +23,22 @@ export default function WisdomsPage() {
   }
 
   return (
-    <div className="w-full mx-auto max-w-4xl py-8 px-4">
-        {/* 返回按鈕 */}
+    <div className="w-full mx-auto max-w-5xl py-8 px-4 relative z-10">
+      <div className="mb-8">
         <Link href="/admin">
-          <button className="mb-6 px-4 py-2 border-2 border-amber-300 bg-white hover:bg-amber-50 text-amber-900 font-bold rounded-lg transition-all">
-            ← 返回管理首頁
-          </button>
+          <Button variant="ghost" size="sm" className="mb-4">
+            ← 返回管理中心
+          </Button>
         </Link>
-
-        {/* 頁面標題 */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-            📚 四字箴言管理
-          </h1>
-          <p className="text-amber-700 mt-2 font-medium">
-            ✨ 管理評語系統中使用的四字箴言，提升評語的內涵與多樣性
-          </p>
-        </div>
-
-        {/* 管理元件 */}
-        <WisdomManager />
+        <h1 className="text-4xl sm:text-5xl font-heading font-black tracking-tight bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent leading-tight">
+          四字箴言管理
+        </h1>
+        <p className="text-clay-muted mt-3 font-medium text-lg tracking-wide">
+          管理系統中可用的四字箴言選項
+        </p>
       </div>
-    );
-  }
+
+      <WisdomManager />
+    </div>
+  );
+}

@@ -20,17 +20,20 @@ export default function DashboardPage() {
   if (!isLoggedIn || !isMounted) return null;
 
   return (
-    <div className="w-full mx-auto max-w-2xl py-8 px-4">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent mb-2">
-            ✏️ 評語生成系統
-          </h1>
-          <p className="text-amber-700 font-medium">
-            ✨ 輸入學生姓名，選擇語氣與箴言，系統為你生成貼心的期末評語
-          </p>
-        </div>
-        
-        <EvaluationForm />
+    // 放大最大寬度讓卡片有空間呼吸，加入 relative z-10 避免被背景動畫球遮蓋
+    <div className="w-full mx-auto max-w-3xl py-8 px-4 sm:px-6 relative z-10">
+      <div className="mb-10 text-center">
+        {/* 厚實的糖果色漸層大標題 */}
+        <h1 className="text-4xl sm:text-5xl font-heading font-black tracking-tight bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent mb-4 leading-tight">
+          生成評語
+        </h1>
+        <p className="text-lg text-clay-muted font-medium max-w-xl mx-auto">
+          請輸入學生姓名，選擇適合的語氣與箴言，讓系統快速生成期末評語
+        </p>
       </div>
-    );
+      
+      {/* 你的表單元件 (現在內部的卡片、按鈕、輸入框已經全部都是黏土風格了) */}
+      <EvaluationForm />
+    </div>
+  );
 }
