@@ -69,7 +69,7 @@ export function WisdomManager() {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || (dialogMode === 'create' ? '建立失敗' : '更新失敗'));
       }
-      setSuccessMessage(dialogMode === 'create' ? '箴言建立成功' : '箴言更新成功');
+      setSuccessMessage(dialogMode === 'create' ? '形容詞建立成功' : '形容詞更新成功');
       handleCloseDialog();
       setTimeout(() => { setSuccessMessage(null); fetchWisdoms(); }, 1500);
     } catch (err) { setError(extractErrorMessage(err)); } 
@@ -85,7 +85,7 @@ export function WisdomManager() {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` },
       });
       if (!response.ok) throw new Error('刪除失敗');
-      setSuccessMessage('箴言已刪除');
+      setSuccessMessage('形容詞已刪除');
       setShowDeleteConfirm(false); setDeletingWisdom(null);
       setTimeout(() => { setSuccessMessage(null); fetchWisdoms(); }, 1500);
     } catch (err) { setError(extractErrorMessage(err)); } 
@@ -96,7 +96,7 @@ export function WisdomManager() {
     return (
       <div className="p-12 rounded-[32px] bg-white/70 backdrop-blur-xl shadow-clay-card text-center">
         <p className="text-clay-muted font-bold text-lg flex items-center justify-center gap-2">
-          <span className="animate-spin text-2xl">⏳</span> 載入箴言庫中...
+          <span className="animate-spin text-2xl">⏳</span> 載入形容詞庫中...
         </p>
       </div>
     );
@@ -109,10 +109,10 @@ export function WisdomManager() {
 
       <div className="flex justify-between items-center bg-[#EFEBF5] p-5 rounded-[24px] shadow-clay-pressed">
         <div>
-          <h2 className="text-xl font-heading font-black text-clay-foreground">四字箴言列表</h2>
-          <p className="text-sm text-clay-muted font-medium mt-1">目前收錄 {wisdoms.length} 句箴言</p>
+          <h2 className="text-xl font-heading font-black text-clay-foreground">形容詞列表</h2>
+          <p className="text-sm text-clay-muted font-medium mt-1">目前收錄 {wisdoms.length} 句形容詞</p>
         </div>
-        <Button onClick={() => handleOpenDialog('create')}>+ 新增箴言</Button>
+        <Button onClick={() => handleOpenDialog('create')}>+ 新增形容詞</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -133,12 +133,12 @@ export function WisdomManager() {
         <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] p-8 max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl font-heading font-black text-clay-foreground mb-2">
-              {dialogMode === 'create' ? '✨ 新增箴言' : '📝 編輯箴言'}
+              {dialogMode === 'create' ? '✨ 新增形容詞' : '📝 編輯形容詞'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-5 mt-2">
             <div className="space-y-2">
-              <label className="block text-base font-bold text-clay-foreground pl-2">箴言內容 *</label>
+              <label className="block text-base font-bold text-clay-foreground pl-2">形容詞內容 *</label>
               <Input
                 type="text" maxLength={20} required
                 value={formData.content}
@@ -165,7 +165,7 @@ export function WisdomManager() {
           </DialogHeader>
           <div className="space-y-6 mt-2">
             <p className="text-base text-clay-foreground font-medium">
-              確定要刪除箴言 <span className="font-bold text-clay-accent font-heading text-lg">「{deletingWisdom?.content}」</span> 嗎？<br /><br />此操作無法復原。
+              確定要刪除形容詞 <span className="font-bold text-clay-accent font-heading text-lg">「{deletingWisdom?.content}」</span> 嗎？<br /><br />此操作無法復原。
             </p>
             <div className="flex gap-3">
               <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)} disabled={isSubmitting} className="flex-1">保留</Button>

@@ -4,7 +4,7 @@
  * 
  * 請求：
  *   - studentName: 學生姓名
- *   - wisdomIds: 箴言 ID 陣列
+ *   - wisdomIds: 形容詞 ID 陣列
  *   - toneId: 語氣 ID
  * 
  * 響應：
@@ -13,7 +13,7 @@
  *     data: {
  *       prompt: "生成的提示詞文本...",
  *       metadata: {
- *         wisdoms: ["箴言1", "箴言2"],
+ *         wisdoms: ["形容詞1", "形容詞2"],
  *         selectedWisdomCount: 2
  *       }
  *     }
@@ -56,8 +56,15 @@ export async function POST(request: NextRequest) {
       toneId,
     });
 
-    // 驗證 Prompt
-    if (!validatePrompt(result.prompt)) {
+    // 驗證 Prompt - 傳遞所有必要的參數進行完整驗證
+    const wisdomTexts = result.metadata.wisdoms.join("、");
+    if (!validatePrompt(result.prompt, studentName, wisdomTexts)) {
+      console.error("Validation failed:", {
+        promptLength: result.prompt.length,
+        studentNameIncluded: result.prompt.includes(studentName),
+        wisdomsIncluded: result.prompt.includes(wisdomTexts),
+        hasStructure: result.prompt.includes("【學生姓名】") && result.prompt.includes("【個人特質】"),
+      });
       throw new Error("Generated prompt validation failed");
     }
 

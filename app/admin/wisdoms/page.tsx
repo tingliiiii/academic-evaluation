@@ -31,10 +31,10 @@ export default function WisdomsAdminPage() {
           </Button>
         </Link>
         <h1 className="text-4xl sm:text-5xl font-heading font-black tracking-tight bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent leading-tight">
-          四字箴言管理
+          形容詞管理
         </h1>
         <p className="text-clay-muted mt-3 font-medium text-lg tracking-wide">
-          管理系統中可用的四字箴言選項
+          管理系統中可用的形容詞選項
         </p>
       </div>
 

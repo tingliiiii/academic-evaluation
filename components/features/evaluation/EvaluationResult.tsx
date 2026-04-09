@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 interface EvaluationResultProps {
   studentName: string;
   toneName: string;
+  wisdoms: string;
   content: string;
   createdAt?: string;
   evaluationId?: string;
@@ -17,6 +18,7 @@ interface EvaluationResultProps {
 export function EvaluationResult({
   studentName,
   toneName,
+  wisdoms,
   content,
   createdAt,
   evaluationId,
@@ -41,7 +43,11 @@ export function EvaluationResult({
   const handleExport = () => {
     const element = document.createElement('a');
     const file = new Blob([
-      `學生姓名：${studentName}\n語氣：${toneName}\n${createdAt ? `生成時間：${createdAt}\n` : ''}---\n\n${content}`,
+      `學生姓名：${studentName}
+      \n語氣：${toneName}
+      \n形容詞：${wisdoms}
+      \n${createdAt ? `生成時間：${createdAt}
+      \n` : ''}---\n\n${content}`,
     ], { type: 'text/plain;charset=utf-8' });
     element.href = URL.createObjectURL(file);
     element.download = `評語_${studentName}_${new Date().toISOString().split('T')[0]}.txt`;
@@ -67,7 +73,7 @@ export function EvaluationResult({
     if (!dateString) return '';
     return new Intl.DateTimeFormat('zh-TW', {
       year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false
     }).format(new Date(dateString));
   };
 
@@ -77,19 +83,21 @@ export function EvaluationResult({
       <div className="p-6 sm:p-8 rounded-[32px] bg-[#EFEBF5] shadow-clay-pressed">
         <div className="flex justify-between items-start">
           <div className="space-y-2">
-            <h2 className="text-3xl font-heading font-black text-clay-foreground">
-              👤 {studentName}
+            <h2 className="text-3xl font-heading font-black text-clay-foreground mb-4">
+              {studentName}
             </h2>
-            <p className="text-base text-clay-muted">
-              🎭 語氣：<span className="font-bold text-clay-accent">{toneName}</span>
+            <p className="text-sm text-clay-muted">
+              語氣：<span className="font-bold text-clay-accent">{toneName}</span>
+            </p>
+            <p className="text-sm text-clay-muted">
+              形容詞：<span className="font-bold text-clay-accent">{wisdoms}</span>
             </p>
             {createdAt && (
-              <p className="text-sm text-clay-muted/80 font-bold tracking-wide">
-                ⏰ 生成時間：{formatDate(createdAt)}
+              <p className="text-sm text-clay-muted tracking-wide">
+                生成時間：{formatDate(createdAt)}
               </p>
             )}
           </div>
-          <div className="text-4xl animate-clay-breathe">✨</div>
         </div>
       </div>
 
@@ -103,14 +111,14 @@ export function EvaluationResult({
       {/* 操作按鈕群 */}
       <div className="flex gap-3 flex-wrap pt-2">
         <Button onClick={handleCopy} variant={isCopied ? "default" : "secondary"} className="flex-1 min-w-[120px]">
-          {isCopied ? '✓ 已複製' : '📋 複製評語'}
+          {isCopied ? '已複製' : '複製評語'}
         </Button>
         <Button onClick={() => setIsExporting(true)} variant="secondary" className="flex-1 min-w-[120px]">
-          💾 匯出檔案
+          匯出檔案
         </Button>
         {evaluationId && onDelete && (
           <Button onClick={() => setShowDeleteConfirm(true)} variant="destructive" className="flex-1 min-w-[120px]">
-            🗑️ 刪除
+            刪除
           </Button>
         )}
       </div>
@@ -120,7 +128,7 @@ export function EvaluationResult({
         <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] sm:rounded-[40px] p-8">
           <DialogHeader>
             <DialogTitle className="text-clay-foreground text-2xl font-black font-heading">
-              💾 確認匯出
+              確認匯出
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 mt-2">
@@ -143,7 +151,7 @@ export function EvaluationResult({
         <DialogContent className="bg-white/90 backdrop-blur-xl border-0 shadow-clay-card rounded-[32px] sm:rounded-[40px] p-8">
           <DialogHeader>
             <DialogTitle className="text-clay-secondary text-2xl font-black font-heading">
-              🗑️ 確認刪除
+              確認刪除
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 mt-2">
@@ -153,7 +161,7 @@ export function EvaluationResult({
               </div>
             )}
             <p className="text-lg text-clay-foreground font-medium">
-              您確定要刪除 <span className="font-bold text-clay-accent">{studentName}</span> 的評語嗎？<br/>此操作無法撤銷。
+              確定要刪除 <span className="font-bold text-clay-accent">{studentName}</span> 的評語嗎？<br/>
             </p>
             <div className="flex gap-3 pt-4">
               <Button onClick={() => setShowDeleteConfirm(false)} variant="secondary" className="flex-1">

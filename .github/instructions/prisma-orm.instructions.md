@@ -232,7 +232,7 @@ async function main() {
   await prisma.tone.deleteMany({});
   await prisma.student.deleteMany({});
 
-  // 2. 建立箴言
+  // 2. 建立形容詞
   const wisdoms = await Promise.all([
     prisma.wisdom.create({
       data: {
@@ -248,7 +248,7 @@ async function main() {
         isActive: true,
       },
     }),
-    // ... 其他箴言
+    // ... 其他形容詞
   ]);
 
   // 3. 建立語氣
@@ -274,7 +274,7 @@ async function main() {
   ]);
 
   console.log('Seed 資料已成功建立！');
-  console.log(`- ${wisdoms.length} 個箴言`);
+  console.log(`- ${wisdoms.length} 個形容詞`);
   console.log(`- ${tones.length} 個語氣`);
   console.log(`- ${students.length} 個學生`);
 }

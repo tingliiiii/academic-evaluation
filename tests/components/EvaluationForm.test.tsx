@@ -33,7 +33,7 @@ describe('EvaluationForm 組件', () => {
       // 期望：
       // - studentName: "請輸入學生姓名"
       // - tone: "請選擇語氣"
-      // - wisdoms: "選擇箴言 (可多選)"
+      // - wisdoms: "選擇形容詞 (可多選)"
       expect(true).toBe(true);
     });
   });
@@ -61,7 +61,7 @@ describe('EvaluationForm 組件', () => {
       expect(selectedTone).toBeFalsy();
     });
 
-    it('應該驗證是否選擇了至少一個箴言', () => {
+    it('應該驗證是否選擇了至少一個形容詞', () => {
       const selectedWisdoms: string[] = [];
 
       // 應該驗證失敗

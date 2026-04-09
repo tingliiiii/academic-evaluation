@@ -9,7 +9,7 @@ echo "============================================================"
 
 # Step 1: 獲取真實的 Wisdom ID
 echo ""
-echo "📋 Step 1：獲取箴言和語氣數據"
+echo "📋 Step 1：獲取形容詞和語氣數據"
 wisdoms=$(curl -s "$BASE_URL/admin/wisdoms")
 tones=$(curl -s "$BASE_URL/admin/tones")
 

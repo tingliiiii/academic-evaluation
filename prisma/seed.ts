@@ -11,7 +11,7 @@ async function main() {
   await prisma.wisdom.deleteMany();
   await prisma.tone.deleteMany();
 
-  // 新增預設的四字箴言
+  // 新增預設的形容詞
   const wisdoms = await Promise.all([
     prisma.wisdom.create({
       data: {
@@ -57,7 +57,7 @@ async function main() {
     }),
   ]);
 
-  console.log(`✓ 已建立 ${wisdoms.length} 個四字箴言`);
+  console.log(`✓ 已建立 ${wisdoms.length} 個形容詞`);
 
   // 新增預設的語氣
   const tones = await Promise.all([

@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const actualContent = body.content;
 
     if (!actualContent || typeof actualContent !== 'string') {
-      return NextResponse.json({ success: false, error: '箴言內容為必填項目' }, { status: 400 });
+      return NextResponse.json({ success: false, error: '形容詞內容為必填項目' }, { status: 400 });
     }
 
     // 檢查 content 是否重複 (因為 Schema 中 content 是 @unique)
@@ -28,10 +28,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (existing) {
-      return NextResponse.json({ success: false, error: '此箴言已經存在囉！' }, { status: 400 });
+      return NextResponse.json({ success: false, error: '此形容詞已經存在囉！' }, { status: 400 });
     }
 
-    // 新增箴言，id 讓資料庫透過 cuid() 自動產生
+    // 新增形容詞，id 讓資料庫透過 cuid() 自動產生
     const wisdom = await prisma.wisdom.create({
       data: {
         content: actualContent.trim(),
@@ -41,6 +41,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, data: wisdom }, { status: 201 });
   } catch (error) {
     console.error('Error creating wisdom:', error);
-    return NextResponse.json({ success: false, error: '新增箴言失敗' }, { status: 500 });
+    return NextResponse.json({ success: false, error: '新增形容詞失敗' }, { status: 500 });
   }
 }

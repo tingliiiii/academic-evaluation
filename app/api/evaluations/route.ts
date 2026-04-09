@@ -38,7 +38,7 @@ import {
  * @param {Object} request.body - 請求體
  * @param {string} request.body.studentName - 學生姓名 (2-10字)
  * @param {string} request.body.toneId - 語氣ID
- * @param {string[]} request.body.wisdomIds - 箴言ID列表 (至少1個)
+ * @param {string[]} request.body.wisdomIds - 形容詞ID列表 (至少1個)
  * @param {string} request.body.prompt - Gemini API 提示詞 (至少50字)
  * 
  * @returns {Promise<NextResponse>}
@@ -110,7 +110,7 @@ async function handlePost(request: NextRequest) {
     });
     if (wisdoms.length !== wisdomIds.length) {
       return NextResponse.json(
-        createErrorResponse('部分箴言不存在'),
+        createErrorResponse('部分形容詞不存在'),
         { status: 400 }
       );
     }
@@ -227,7 +227,7 @@ async function handlePost(request: NextRequest) {
  *         "id": "eval_123",
  *         "studentName": "張三",
  *         "toneName": "溫和",
- *         "wisdoms": ["箴言1", "箴言2"],
+ *         "wisdoms": ["形容詞1", "形容詞2"],
  *         "createdAt": "2026-04-06T10:00:00Z"
  *       }
  *     ],
@@ -301,6 +301,7 @@ async function handleGet(request: NextRequest) {
             studentName: e.student.name,
             toneName: e.tone.name,
             wisdoms: e.wisdoms.map((w) => w.wisdom.content),
+            content: e.content,
             createdAt: e.createdAt.toISOString(),
           })),
           pagination: {

@@ -1,10 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC:wght@200..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
   /* 定義字體家族 */
-  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Noto Sans TC", sans-serif;
+  /* var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif; */
+  --font-heading: "Noto Sans TC", sans-serif;
+  /* var(--font-nunito), ui-sans-serif, system-ui, sans-serif; */
 
   /* 核心糖果色板 */
   --color-clay-canvas: #F4F1FA;

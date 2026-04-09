@@ -40,7 +40,7 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
     switch (currentStep) {
       case 'generating-prompt': return '正在組合提示詞...';
       case 'calling-api': return 'AI 靈感湧現中，請稍候...';
-      case 'success': return '✓ 生成成功！準備為您呈現...';
+      case 'success': return '✓ 生成成功！準備呈現...';
       default: return '';
     }
   };
@@ -141,10 +141,11 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
         <div className="p-6 sm:p-8 bg-white/80 backdrop-blur-xl rounded-[32px] sm:rounded-[40px] shadow-clay-card animate-in fade-in zoom-in-95 duration-300">
           <div className="mb-6">
             <h2 className="text-2xl font-heading font-black text-clay-foreground mb-2 flex items-center gap-2">
-              <span>👀</span> 檢視與微調提示詞
+              檢視與微調提示詞
             </h2>
             <p className="text-clay-muted font-medium text-sm sm:text-base">
-              這是即將傳送給 Gemini AI 的指令。您可以在此進行最後的修改，確認無誤後再點擊生成，以節省 API 額度。
+              這是即將傳送給 Gemini AI 的指令。<br/>
+              可以在此進行最後的修改，確認無誤後再點擊生成。
             </p>
           </div>
           
@@ -159,10 +160,10 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
           
           <div className="flex gap-4">
             <Button variant="secondary" onClick={() => setCurrentStep('idle')} disabled={isSubmitting} className="flex-1 text-base sm:text-lg">
-              ← 修改表單
+              返回
             </Button>
             <Button onClick={handleConfirmGenerate} disabled={isSubmitting} className="flex-[2] text-base sm:text-lg">
-              {isSubmitting ? '✨ 生成中...' : '✨ 確認並呼叫 AI'}
+              {isSubmitting ? '✨ 生成中...' : '確認並呼叫 AI'}
             </Button>
           </div>
 
@@ -220,7 +221,7 @@ export function EvaluationForm({ onSuccess }: EvaluationFormProps) {
 
         <div className="flex gap-4 pt-4">
           <Button type="submit" disabled={isSubmitting || success} className="flex-1 text-lg" size="lg">
-            {isSubmitting ? `${getStepMessage().split('...')[0]}...` : '👁 產生提示詞預覽'}
+            {isSubmitting ? `${getStepMessage().split('...')[0]}...` : '產生提示詞預覽'}
           </Button>
 
           {error && currentStep === 'error' && retryCount >= 3 && (

@@ -20,7 +20,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="w-full mx-auto max-w-5xl py-8 px-4 relative z-10">
+    <div className="w-full mx-auto max-w-6xl py-8 px-4 relative z-10">
       <div className="mb-10 text-center">
         <h1 className="text-4xl sm:text-5xl font-heading font-black tracking-tight bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent mb-4 leading-tight">
           評語歷史

@@ -15,7 +15,7 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// 四字箴言表
+// 形容詞表
 model Wisdom {
   id        String   @id @default(cuid())
   content   String   @unique
@@ -76,7 +76,7 @@ model Evaluation {
   @@map("evaluations")
 }
 
-// 評語與箴言的多對多關係
+// 評語與形容詞的多對多關係
 model EvaluationWisdom {
   evaluationId String
   wisdomId     String

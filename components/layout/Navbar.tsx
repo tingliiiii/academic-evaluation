@@ -60,11 +60,8 @@ export function Navbar() {
             
             {/* Logo & Brand */}
             <Link href="/dashboard" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] rounded-2xl sm:rounded-[20px] flex items-center justify-center text-white text-lg sm:text-xl shadow-clay-btn transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
-                ✨
-              </div>
               <span className="hidden sm:inline font-heading font-black tracking-tight text-xl bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent">
-                評語系統
+                快速評語生成小幫手
               </span>
             </Link>
 

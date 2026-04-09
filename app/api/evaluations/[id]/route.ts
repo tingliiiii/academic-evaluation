@@ -39,7 +39,7 @@ export async function GET(
           id: evaluation.id,
           studentName: evaluation.student.name,
           toneName: evaluation.tone.name,
-          wisdoms: evaluation.wisdoms.map((w) => w.wisdom.content),
+          wisdoms: evaluation.wisdoms.map((w) => w.wisdom.content).join("、"),
           content: evaluation.content,
           prompt: evaluation.prompt,
           createdAt: evaluation.createdAt.toISOString(),

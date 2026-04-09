@@ -83,11 +83,11 @@ export const wisdomIdsSchema = z
   .array(z.string())
   .min(
     VALIDATION_RULES.WISDOM_COUNT_MIN,
-    `至少需選擇 ${VALIDATION_RULES.WISDOM_COUNT_MIN} 個箴言`
+    `至少需選擇 ${VALIDATION_RULES.WISDOM_COUNT_MIN} 個形容詞`
   )
   .max(
     VALIDATION_RULES.WISDOM_COUNT_MAX,
-    `最多可選擇 ${VALIDATION_RULES.WISDOM_COUNT_MAX} 個箴言`
+    `最多可選擇 ${VALIDATION_RULES.WISDOM_COUNT_MAX} 個形容詞`
   );
 
 // ============================================================================
@@ -206,8 +206,8 @@ export type ToneCreate = z.infer<typeof toneCreateSchema>;
 export const wisdomCreateSchema = z.object({
   content: z
     .string()
-    .min(10, '箴言內容至少 10 個字')
-    .max(500, '箴言內容最多 500 個字'),
+    .min(10, '形容詞內容至少 10 個字')
+    .max(500, '形容詞內容最多 500 個字'),
   priority: z.number().int().min(0).max(100).optional(),
 });
 

@@ -79,7 +79,7 @@ export function useAuthLogin(): UseAuthLoginResult {
 }
 
 // ============================================================================
-// 箴言 Hooks
+// 形容詞 Hooks
 // ============================================================================
 
 export interface UseFetchWisdomsResult {
@@ -106,7 +106,7 @@ export function useFetchWisdoms(): UseFetchWisdomsResult {
         const data = await response.json();
         setWisdoms(data.data || []);
       } catch (err) {
-        const message = err instanceof Error ? err.message : '取得箴言失敗';
+        const message = err instanceof Error ? err.message : '取得形容詞失敗';
         setError(message);
       } finally {
         setLoading(false);

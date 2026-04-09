@@ -18,7 +18,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     });
     
     if (existing && existing.id !== id) {
-      return NextResponse.json({ success: false, error: '此箴言已經存在囉！' }, { status: 400 });
+      return NextResponse.json({ success: false, error: '此形容詞已經存在囉！' }, { status: 400 });
     }
 
     const wisdom = await prisma.wisdom.update({
@@ -31,7 +31,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ success: true, data: wisdom });
   } catch (error) {
     console.error('Error updating wisdom:', error);
-    return NextResponse.json({ success: false, error: '更新箴言失敗' }, { status: 500 });
+    return NextResponse.json({ success: false, error: '更新形容詞失敗' }, { status: 500 });
   }
 }
 
@@ -46,6 +46,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting wisdom:', error);
-    return NextResponse.json({ success: false, error: '刪除箴言失敗' }, { status: 500 });
+    return NextResponse.json({ success: false, error: '刪除形容詞失敗' }, { status: 500 });
   }
 }

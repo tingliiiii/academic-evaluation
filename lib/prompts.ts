@@ -17,7 +17,7 @@ export interface PromptTemplateResult {
 }
 
 /**
- * 從資料庫取得四字箴言和語氣，生成 Prompt
+ * 從資料庫取得形容詞和語氣，生成 Prompt
  */
 export async function generatePromptTemplate(
   params: PromptTemplateParams
@@ -94,31 +94,25 @@ function buildEvaluationPrompt(params: {
 
   return `你是一位經驗豐富的教師，請根據以下要求為學生撰寫期末評語。
 
-【學生姓名】
-${studentName}
+【學生姓名】${studentName}
 
-【評語重點（四字箴言）】
-${wisdoms}
+【個人特質（評語重點）】${wisdoms}
 
-【評語語氣和風格】
-${tone}
+【評語語氣和風格】${tone}
 ${toneDescription ? `具體要求：${toneDescription}` : ""}
 
 【評語要求】
-1. 評語長度：200-300 字
-2. 結構清晰：
-   - 首段：總體評價
-   - 中段：具體例子和亮點分析（針對上述四字箴言）
-   - 末段：鼓勵和期許
+1. 評語長度：150-200 字
+2. 稱呼方式：使用第二人稱「你」，避免使用第三人稱
 3. 語調：${tone}
 4. 避免：
-   - 重複使用相同短語
-   - 過度修飾
-   - 有歧義的表述
+  - 重複使用相同短語
+  - 過度修飾
+  - 有歧義的表述
 5. 包含：
-   - 對學生優點的具體認可
-   - 針對四字箴言的實例說明
-   - 對未來的建議和期許
+  - 對學生優點的具體認可
+  - 針對形容詞的實例說明
+  - 對未來的建議和期許
 
 請生成評語（直接輸出評語文本，無需額外說明）：`;
 }
@@ -128,7 +122,7 @@ ${toneDescription ? `具體要求：${toneDescription}` : ""}
  * ✅ 改進：不再依賴脆弱的字符串搜尋，而是驗證實際的內容變數
  * @param prompt - 生成的 Prompt
  * @param studentName - 學生姓名（應該已插入到 Prompt 中）
- * @param wisdomTexts - 四字箴言文字（應該已插入到 Prompt 中）
+ * @param wisdomTexts - 形容詞文字（應該已插入到 Prompt 中）
  * @returns 是否有效
  */
 export function validatePrompt(
@@ -150,5 +144,6 @@ export function validatePrompt(
   }
 
   // 確保 Prompt 包含基本的結構（模板標籤）
-  return prompt.includes("【學生姓名】") && prompt.includes("【評語重點");
+  // ✅ 修正：檢查實際存在於 buildEvaluationPrompt 中的文本
+  return prompt.includes("【學生姓名】") && prompt.includes("【個人特質");
 }

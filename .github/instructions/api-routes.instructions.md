@@ -48,8 +48,8 @@ const evaluationRequestSchema = z.object({
     .min(1, '學生姓名必填')
     .max(50, '姓名不能超過 50 字'),
   wisdomIds: z.array(z.string())
-    .min(1, '至少選擇一個箴言')
-    .max(5, '最多選擇 5 個箴言'),
+    .min(1, '至少選擇一個形容詞')
+    .max(10, '最多選擇 10 個形容詞'),
   toneId: z.string()
     .min(1, '必須選擇一個語氣'),
 });
@@ -263,7 +263,7 @@ export async function PATCH(
 curl -X PATCH http://localhost:3000/api/admin/wisdoms/123 \
   -H "Authorization: Bearer your_password" \
   -H "Content-Type: application/json" \
-  -d '{"content":"新的箴言"}'
+  -d '{"content":"新的形容詞"}'
 
 # ❌ 錯誤的格式
 curl -X PATCH http://localhost:3000/api/admin/wisdoms/123 \

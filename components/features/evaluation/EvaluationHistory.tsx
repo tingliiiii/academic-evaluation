@@ -35,7 +35,7 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
       if (!response.ok) throw new Error(response.status === 401 ? '認證失敗' : '無法載入');
       const data = await response.json();
       setEvaluations(data.data?.items || []);
-    } catch (err) { setError(extractErrorMessage(err)); } 
+    } catch (err) { setError(extractErrorMessage(err)); }
     finally { setLoading(false); }
   }, [page, limit]);
 
@@ -53,9 +53,9 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
       setSuccessMessage('評語已成功刪除');
       setSelectedEvaluation(null);
       setTimeout(() => { setPage(1); handleFetchEvaluations(); }, 500);
-    } catch (err) { 
+    } catch (err) {
       console.error('Error deleting evaluation:', err);
-     } 
+    }
     finally { setDeleting(null); }
   };
 
@@ -80,7 +80,6 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
   if (!evaluations.length) {
     return (
       <div className="p-12 rounded-[40px] bg-white/70 backdrop-blur-xl shadow-clay-card text-center">
-        <p className="text-5xl mb-4">📭</p>
         <p className="text-clay-foreground font-black font-heading text-2xl mb-2">還沒有評語記錄</p>
         <p className="text-clay-muted font-medium">生成第一份評語後，它將顯示在此處</p>
       </div>
@@ -94,33 +93,33 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
           ✨ {successMessage}
         </div>
       )}
-      
+
       <div className="bg-white/80 backdrop-blur-xl rounded-[32px] sm:rounded-[40px] shadow-clay-card overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="bg-[#EFEBF5] border-b-0 hover:bg-[#EFEBF5]">
-                <TableHead className="text-clay-muted font-bold py-5">學生姓名</TableHead>
-                <TableHead className="text-clay-muted font-bold">語氣</TableHead>
+                <TableHead className="text-clay-muted font-bold py-5">學生</TableHead>
+                <TableHead className="text-clay-muted font-bold">評語</TableHead>
                 <TableHead className="text-clay-muted font-bold">生成時間</TableHead>
-                <TableHead className="text-right text-clay-muted font-bold px-6">操作</TableHead>
+                <TableHead className="text-right text-clay-muted font-bold px-6"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {evaluations.map((evaluation) => (
                 <TableRow key={evaluation.id} className="border-b border-clay-muted/10 hover:bg-clay-accent/5 transition-colors">
-                  <TableCell className="font-bold text-clay-foreground py-4">
+                  <TableCell className="font-bold text-clay-foreground py-4 text-center">
                     {evaluation.studentName}
                   </TableCell>
-                  <TableCell className="font-medium text-clay-muted">
-                    {evaluation.toneName}
+                  <TableCell className="text-sm text-clay-muted/80">
+                    {evaluation.content.length > 50 ? evaluation.content.slice(0, 50) + '...' : evaluation.content}
                   </TableCell>
-                  <TableCell className="text-sm font-medium text-clay-muted/80">
-                    {new Date(evaluation.createdAt).toLocaleDateString('zh-TW', {
-                      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                  <TableCell className="text-clay-muted">
+                    {new Date(evaluation.createdAt).toLocaleString('zh-TW', {
+                      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
                     })}
                   </TableCell>
-                  <TableCell className="text-right space-x-2 px-6">
+                  <TableCell className="text-right space-x-2">
                     <Button
                       variant="secondary" size="sm"
                       onClick={() => setSelectedEvaluation(evaluation)}
@@ -173,7 +172,7 @@ export function EvaluationHistory({ limit = 10, showPagination = true }: Evaluat
             </DialogHeader>
             <div className="space-y-6 mt-4">
               <div className="p-5 bg-[#EFEBF5] rounded-[20px] shadow-clay-pressed">
-                <p className="text-sm font-bold text-clay-muted mb-3">套用箴言</p>
+                <p className="text-sm font-bold text-clay-muted mb-3">套用形容詞</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedEvaluation.wisdoms.map(w => (
                     <span key={w} className="px-3 py-1.5 bg-white shadow-sm rounded-full text-sm font-bold text-clay-accent">

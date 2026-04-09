@@ -17,7 +17,7 @@ import type { Prisma } from "@prisma/client";
 // ============================================================================
 
 /**
- * 箴言模型
+ * 形容詞模型
  */
 export type Wisdom = Prisma.WisdomGetPayload<Record<string, never>>;
 
@@ -76,7 +76,7 @@ export interface LoginResponse {
 export interface EvaluationRequest {
   /** 學生名稱（2-10字） */
   studentName: string;
-  /** 箴言ID列表（至少1個，最多10個） */
+  /** 形容詞ID列表（至少1個，最多10個） */
   wisdomIds: string[];
   /** 語氣ID */
   toneId: string;
@@ -166,7 +166,7 @@ export interface EvaluationDetailResponse extends EvaluationResponse {
 export interface PromptGenerationRequest {
   /** 學生名稱 */
   studentName: string;
-  /** 箴言ID列表 */
+  /** 形容詞ID列表 */
   wisdomIds: string[];
   /** 語氣ID */
   toneId: string;
@@ -185,7 +185,7 @@ export interface PromptGenerationResponse {
 }
 
 // ============================================================================
-// 語氣和箴言相關類型
+// 語氣和形容詞相關類型
 // ============================================================================
 
 /**
@@ -208,17 +208,17 @@ export interface ToneListItem {
 }
 
 /**
- * 箴言創建請求
+ * 形容詞創建請求
  */
 export interface WisdomCreateRequest {
-  /** 箴言內容 */
+  /** 形容詞內容 */
   content: string;
   /** 優先級（0-100） */
   priority?: number;
 }
 
 /**
- * 箴言列表響應項目
+ * 形容詞列表響應項目
  */
 export interface WisdomListItem {
   id: string;

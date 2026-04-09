@@ -70,7 +70,7 @@ export const ERROR_MESSAGES: Record<string, string> = {
   'Failed to generate evaluation': '生成評語失敗',
   'Failed to fetch evaluations': '無法載入評語列表',
   'Failed to fetch tones': '無法載入語氣列表',
-  'Failed to fetch wisdoms': '無法載入箴言列表',
+  'Failed to fetch wisdoms': '無法載入形容詞列表',
 };
 
 /**

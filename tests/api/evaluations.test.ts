@@ -26,7 +26,7 @@ describe('POST /api/evaluations', () => {
       studentName: '張三',
       toneId: 'friendly',
       wisdomIds: ['wisdom_1', 'wisdom_2'],
-      prompt: '這是一個測試提示詞，包含足夠的內容來生成一份高品質的期末評語。請根據提供的學生姓名、箴言和語氣風格，生成一份詳細而有意義的評語。',
+      prompt: '這是一個測試提示詞，包含足夠的內容來生成一份高品質的期末評語。請根據提供的學生姓名、形容詞和語氣風格，生成一份詳細而有意義的評語。',
     };
 
     // 預期行為
@@ -91,12 +91,12 @@ describe('POST /api/evaluations', () => {
   });
 
   /**
-   * 驗證失敗 - 沒有選擇箴言
+   * 驗證失敗 - 沒有選擇形容詞
    */
-  it('應該驗證失敗 - 沒有選擇任何箴言', async () => {
+  it('應該驗證失敗 - 沒有選擇任何形容詞', async () => {
     const wisdomIds = [];
 
-    // 應該至少選擇 1 個箴言
+    // 應該至少選擇 1 個形容詞
     expect(wisdomIds.length).toBe(0);
   });
 });

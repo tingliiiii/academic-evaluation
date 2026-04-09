@@ -201,7 +201,7 @@ export const openApiSpec = {
                     minItems: 1,
                     maxItems: 10,
                     items: { type: 'string' },
-                    description: '箴言ID列表',
+                    description: '形容詞ID列表',
                   },
                   prompt: {
                     type: 'string',
@@ -342,7 +342,7 @@ export const openApiSpec = {
                   wisdomIds: {
                     type: 'array',
                     items: { type: 'string' },
-                    description: '箴言ID列表',
+                    description: '形容詞ID列表',
                   },
                 },
                 required: ['studentName', 'toneId', 'wisdomIds'],
@@ -439,8 +439,8 @@ export const openApiSpec = {
     },
     '/api/admin/wisdoms': {
       get: {
-        summary: '取得所有箴言',
-        description: '取得可用的箴言列表',
+        summary: '取得所有形容詞',
+        description: '取得可用的形容詞列表',
         tags: ['Admin'],
         security: [
           {
@@ -449,13 +449,13 @@ export const openApiSpec = {
         ],
         responses: {
           200: {
-            description: '成功取得箴言列表',
+            description: '成功取得形容詞列表',
           },
         },
       },
       post: {
-        summary: '新增箴言',
-        description: '新增一個新的箴言',
+        summary: '新增形容詞',
+        description: '新增一個新的形容詞',
         tags: ['Admin'],
         security: [
           {
@@ -473,7 +473,7 @@ export const openApiSpec = {
                     type: 'string',
                     minLength: 10,
                     maxLength: 500,
-                    description: '箴言內容',
+                    description: '形容詞內容',
                   },
                   priority: {
                     type: 'integer',
@@ -489,7 +489,7 @@ export const openApiSpec = {
         },
         responses: {
           201: {
-            description: '箴言創建成功',
+            description: '形容詞創建成功',
           },
           400: {
             description: '驗證失敗',

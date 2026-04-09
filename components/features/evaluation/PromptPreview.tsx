@@ -25,7 +25,7 @@ export function PromptPreview({ promptContent, studentName }: PromptPreviewProps
         <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
           <div className="flex-1">
             <h3 className="font-bold text-clay-foreground mb-2 flex items-center gap-2">
-              <span>🤖</span> AI 提示詞預覽
+              AI 提示詞預覽
             </h3>
             {studentName && (
               <p className="text-sm text-clay-muted font-bold mb-2">
@@ -38,10 +38,10 @@ export function PromptPreview({ promptContent, studentName }: PromptPreviewProps
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button variant="secondary" size="sm" onClick={handleCopy} className="flex-1 sm:flex-none">
-              {isCopied ? '✓ 已複製' : '📋 複製'}
+              {isCopied ? '已複製' : '複製'}
             </Button>
             <Button variant="secondary" size="sm" onClick={() => setIsDialogOpen(true)} className="flex-1 sm:flex-none">
-              👁 展開
+              展開
             </Button>
           </div>
         </div>
@@ -61,7 +61,7 @@ export function PromptPreview({ promptContent, studentName }: PromptPreviewProps
               </p>
             </div>
             <Button onClick={handleCopy} className="w-full">
-              {isCopied ? '✓ 已成功複製提示詞' : '📋 複製提示詞'}
+              {isCopied ? '已成功複製提示詞' : '複製提示詞'}
             </Button>
           </div>
         </DialogContent>

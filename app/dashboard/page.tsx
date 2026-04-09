@@ -28,7 +28,7 @@ export default function DashboardPage() {
           生成評語
         </h1>
         <p className="text-lg text-clay-muted font-medium max-w-xl mx-auto">
-          請輸入學生姓名，選擇適合的語氣與箴言，讓系統快速生成期末評語
+          請輸入學生姓名，選擇適合的語氣與形容詞，讓系統快速生成期末評語
         </p>
       </div>
       

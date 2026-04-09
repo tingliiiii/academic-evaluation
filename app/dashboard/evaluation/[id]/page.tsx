@@ -11,6 +11,7 @@ interface EvaluationDetail {
   id: string;
   studentName: string;
   toneName: string;
+  wisdoms: string;
   content: string;
   createdAt: string;
 }
@@ -82,20 +83,20 @@ export default function EvaluationDetailPage() {
   return (
     <div className="w-full mx-auto max-w-3xl py-8 px-4 relative z-10">
       <div className="mb-8 flex flex-col items-start gap-4">
-        <Button onClick={() => router.back()} variant="ghost" size="sm" className="mb-2">
+        <Button onClick={() => router.push('/dashboard/history')} variant="ghost" size="sm" className="mb-2">
           ← 返回列表
         </Button>
         <div>
           <h1 className="text-4xl sm:text-5xl font-heading font-black tracking-tight bg-gradient-to-br from-[#7C3AED] to-[#DB2777] bg-clip-text text-transparent">
-            ✏️ 評語詳情
+            評語詳情
           </h1>
-          <p className="text-clay-muted mt-2 font-medium tracking-wide text-sm">ID: {evaluationId}</p>
         </div>
       </div>
 
       <EvaluationResult
         studentName={evaluation.studentName}
         toneName={evaluation.toneName}
+        wisdoms={evaluation.wisdoms}
         content={evaluation.content}
         createdAt={evaluation.createdAt}
         evaluationId={evaluation.id}

@@ -9,11 +9,11 @@
 **快速評語生成系統** 是一個 Next.js 前後端Web應用，協助教師快速生成學生期末評語。
 
 **流程：**
-1. 老師輸入學生姓名、選擇四字箴言、選擇語氣
+1. 老師輸入學生姓名、選擇形容詞、選擇語氣
 2. 系統自動生成發送給 Gemini API 的 prompt
 3. 老師確認後，呼叫 Gemini API 生成最終評語
 4. 評語儲存至資料庫，可查詢歷史記錄
-5. 後台管理：老師可動態管理四字箴言和語氣列表（CRUD）
+5. 後台管理：老師可動態管理形容詞和語氣列表（CRUD）
 
 ---
 
@@ -47,25 +47,25 @@ academic-evaluation/
 │   │   │   ├── list/route.ts       # 取得評語列表
 │   │   │   └── [id]/route.ts       # 取得評語詳情
 │   │   └── admin/
-│   │       ├── wisdoms/route.ts    # 箴言 CRUD
+│   │       ├── wisdoms/route.ts    # 形容詞 CRUD
 │   │       └── tones/route.ts      # 語氣 CRUD
 │   ├── history/
 │   │   └── page.tsx                # 評語歷史頁面
 │   └── admin/
 │       ├── page.tsx                # 後台管理首頁
-│       ├── wisdoms/page.tsx        # 四字箴言管理
+│       ├── wisdoms/page.tsx        # 形容詞管理
 │       ├── tones/page.tsx          # 語氣管理
 │       └── layout.tsx              # 後台佈局
 ├── components/
 │   ├── ui/                         # shadcn/ui 元件
 │   ├── StudentInfoForm.tsx         # 學生資訊輸入
-│   ├── WisdomSelector.tsx          # 箴言選擇器
+│   ├── WisdomSelector.tsx          # 形容詞選擇器
 │   ├── ToneSelector.tsx            # 語氣選擇器
 │   ├── EvaluationForm.tsx          # 整合表單
 │   ├── PromptPreview.tsx           # Prompt 預覽
 │   ├── EvaluationResult.tsx        # 評語展示
 │   ├── EvaluationHistory.tsx       # 歷史列表
-│   ├── WisdomManager.tsx           # 箴言管理元件
+│   ├── WisdomManager.tsx           # 形容詞管理元件
 │   └── ToneManager.tsx             # 語氣管理元件
 ├── lib/
 │   ├── types.ts                    # TypeScript 型別定義
@@ -102,7 +102,7 @@ app/api/
 │   ├── list/                 ✅ 查詢歷史 (分頁)
 │   └── [id]/                 ✅ 取得/刪除詳情
 └── admin/
-    ├── wisdoms/              ✅ 箴言 CRUD
+    ├── wisdoms/              ✅ 形容詞 CRUD
     └── tones/                ✅ 語氣 CRUD
 
 lib/
@@ -113,7 +113,7 @@ lib/
 
 prisma/
 ├── schema.prisma             ✅ 5 個模型 初始化
-└── seed.ts                   ✅ 6 箴言 4 語氣 2 學生
+└── seed.ts                   ✅ 6 形容詞 4 語氣 2 學生
 ```
 
 ---
@@ -141,7 +141,7 @@ prisma/
 
 ### 第二階段：資料層 & API 層 ✓ 已完成
 - [x] Prisma schema 定義（Wisdom、Tone、Student、Evaluation、EvaluationWisdom 五張表）
-- [x] Prisma seed 腳本編寫（初始化預設四字箴言和語氣）
+- [x] Prisma seed 腳本編寫（初始化預設形容詞和語氣）
 - [x] 環境設定檔優化（DATABASE_URL、DIRECT_URL 已設定）
 - [x] TypeScript 型別定義（lib/types.ts）
 - [x] 資料庫遷移執行（`npx prisma migrate dev --name init`）
@@ -151,7 +151,7 @@ prisma/
   - [x] /api/evaluation/generate — 呼叫 Gemini 生成評語
   - [x] /api/evaluations/list — 取得評語歷史
   - [x] /api/evaluations/[id] — 取得/刪除評語詳情
-  - [x] /api/admin/wisdoms — 箴言 CRUD（認證保護）
+  - [x] /api/admin/wisdoms — 形容詞 CRUD（認證保護）
   - [x] /api/admin/tones — 語氣 CRUD（認證保護）
 - [x] 完整的輸入驗證（Zod schemas）
 - [x] RESTful API 設計 & 錯誤處理

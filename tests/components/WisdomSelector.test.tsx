@@ -22,13 +22,13 @@ describe('WisdomSelector 組件', () => {
   describe('渲染', () => {
     it('應該正確渲染多選列表', () => {
       // 期望：
-      // - Label: "選擇箴言"
+      // - Label: "選擇形容詞"
       // - 複選框列表
       // - 說明文本："至少選擇 1 個"
       expect(true).toBe(true);
     });
 
-    it('應該為每個箴言顯示複選框和標籤', () => {
+    it('應該為每個形容詞顯示複選框和標籤', () => {
       const wisdom = {
         id: '1',
         text: '堅持就是勝利'
@@ -41,11 +41,11 @@ describe('WisdomSelector 組件', () => {
     it('應該顯示選擇計數', () => {
       const selected = ['1', '2'];
 
-      // 顯示："已選擇 2 個箴言"
+      // 顯示："已選擇 2 個形容詞"
       expect(selected.length).toBe(2);
     });
 
-    it('應該顯示箴言的詳細內容', () => {
+    it('應該顯示形容詞的詳細內容', () => {
       const wisdom = {
         id: '1',
         title: '堅持',
@@ -69,7 +69,7 @@ describe('WisdomSelector 組件', () => {
     });
 
     it('應該在加載失敗時顯示錯誤', () => {
-      const error = '無法加載箴言列表';
+      const error = '無法加載形容詞列表';
 
       // 應該在 UI 中顯示錯誤消息
       expect(error).toBeTruthy();
@@ -80,7 +80,7 @@ describe('WisdomSelector 組件', () => {
       expect(true).toBe(true);
     });
 
-    it('應該在組件掛載時獲取箴言數據', () => {
+    it('應該在組件掛載時獲取形容詞數據', () => {
       // 調用 useEffect，發送 GET /api/admin/wisdoms 請求
       expect(true).toBe(true);
     });
@@ -94,7 +94,7 @@ describe('WisdomSelector 組件', () => {
       vi.clearAllMocks();
     });
 
-    it('應該支援選擇多個箴言', () => {
+    it('應該支援選擇多個形容詞', () => {
       const selected = ['wisdom_1', 'wisdom_2', 'wisdom_3'];
 
       // 應該允許多選
@@ -111,7 +111,7 @@ describe('WisdomSelector 組件', () => {
       expect(onChange).toHaveBeenCalledWith(selectedIds);
     });
 
-    it('應該支援添加單個箴言', () => {
+    it('應該支援添加單個形容詞', () => {
       const selected = ['wisdom_1'];
       const toAdd = 'wisdom_2';
 
@@ -120,7 +120,7 @@ describe('WisdomSelector 組件', () => {
       expect(newSelected).toContain(toAdd);
     });
 
-    it('應該支援移除單個箴言', () => {
+    it('應該支援移除單個形容詞', () => {
       const selected = ['wisdom_1', 'wisdom_2'];
       const toRemove = 'wisdom_1';
 
@@ -150,15 +150,15 @@ describe('WisdomSelector 組件', () => {
    * 驗證邏輯
    */
   describe('驗證邏輯', () => {
-    it('應該驗證至少選擇 1 個箴言', () => {
+    it('應該驗證至少選擇 1 個形容詞', () => {
       const selected: string[] = [];
       const isValid = selected.length >= 1;
 
-      // 應該顯示錯誤："至少選擇 1 個箴言"
+      // 應該顯示錯誤："至少選擇 1 個形容詞"
       expect(isValid).toBe(false);
     });
 
-    it('應該允許選擇最多所有箴言', () => {
+    it('應該允許選擇最多所有形容詞', () => {
       const allWisdoms = ['w1', 'w2', 'w3'];
       const selected = allWisdoms;
 
@@ -167,7 +167,7 @@ describe('WisdomSelector 組件', () => {
     });
 
     it('應該在驗證失敗時顯示錯誤消息', () => {
-      const errorMessage = '至少選擇 1 個箴言';
+      const errorMessage = '至少選擇 1 個形容詞';
 
       // 應該在 UI 中顯示此錯誤
       expect(errorMessage).toContain('至少');
@@ -235,7 +235,7 @@ describe('WisdomSelector 組件', () => {
       expect(hasError).toBe(true);
     });
 
-    it('應該支援禁用單個箴言', () => {
+    it('應該支援禁用單個形容詞', () => {
       const disabledIds = ['wisdom_2'];
 
       // 對應的複選框應該 disabled
@@ -249,7 +249,7 @@ describe('WisdomSelector 組件', () => {
   describe('訪問性', () => {
     it('應該有正確的 fieldset 和 legend', () => {
       // fieldset 用於分組
-      // legend="選擇箴言"
+      // legend="選擇形容詞"
       expect(true).toBe(true);
     });
 
@@ -266,7 +266,7 @@ describe('WisdomSelector 組件', () => {
     });
 
     it('應該為屏幕閱讀器提供選擇計數', () => {
-      // aria-live region: "已選擇 2 個箴言"
+      // aria-live region: "已選擇 2 個形容詞"
       expect(true).toBe(true);
     });
   });
@@ -278,22 +278,22 @@ describe('WisdomSelector 組件', () => {
     it('應該處理空的選項列表', () => {
       const wisdoms: Array<{ id: string; content: string }> = [];
 
-      // 應該顯示 "暫無可用箴言"
+      // 應該顯示 "暫無可用形容詞"
       expect(wisdoms.length).toBe(0);
     });
 
     it('應該處理非常多的選項', () => {
       const wisdoms = Array.from({ length: 100 }, (_, i) => ({
         id: `w${i}`,
-        text: `箴言 ${i}`
+        text: `形容詞 ${i}`
       }));
 
       // 應該使用虛擬滾動或分頁
       expect(wisdoms.length).toBeGreaterThan(50);
     });
 
-    it('應該處理非常長的箴言文本', () => {
-      const text = '這是一個非常長的箴言文本，可能超過一行並需要正確的文本換行和排版...';
+    it('應該處理非常長的形容詞文本', () => {
+      const text = '這是一個非常長的形容詞文本，可能超過一行並需要正確的文本換行和排版...';
 
       // 應該正確換行
       expect(text.length).toBeGreaterThan(30);
@@ -310,13 +310,13 @@ describe('WisdomSelector 組件', () => {
    * 交互流程
    */
   describe('交互流程', () => {
-    it('應該支援搜索箴言', () => {
+    it('應該支援搜索形容詞', () => {
       // 可選：提供搜索框
       // 搜索應該過濾列表
       expect(true).toBe(true);
     });
 
-    it('應該支援按類別組織箴言', () => {
+    it('應該支援按類別組織形容詞', () => {
       // 可選：按類別分組
       // 例：品質、行為、成就等
       expect(true).toBe(true);
